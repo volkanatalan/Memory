@@ -4,13 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.content.Intent.*
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.net.toFile
 import kotlinx.android.synthetic.main.activity_add_memory.*
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.list_row_image_container.view.*
@@ -24,6 +25,7 @@ class AddMemoryActivity : AppCompatActivity() {
   private val TAG = "AddMemoryActivity"
   private val mTags = mutableListOf<String>()
   private val mImages = mutableListOf<String>()
+  private val mDocuments = mutableListOf<String>()
   private var PICK_IMAGE_MULTIPLE = 100
   private var ADD_DOCUMENTS = 101
 
@@ -116,34 +118,18 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
       else -> {
-        val appFolderImages = mutableListOf<String>()
-        for (path in mImages) {
-          val sourceFile = File(path)
-          var destinationFile = File(filesDir, sourceFile.name)
+        val appFolderImages: MutableList<String>
+        val appFolderDocuments: MutableList<String>
 
-          val sourceFileName = sourceFile.nameWithoutExtension
-          val sourceFileExtension = sourceFile.extension
-          var count = 1
+        val folderImages = "Images\\"
+        val folderDocuments = "Documents\\"
 
-          // If file exist change its name.
-          while (destinationFile.exists()) {
-            count++
-            val fileNameAddition = "($count)"
-            val fileName = "$sourceFileName$fileNameAddition.$sourceFileExtension" // ...\fileName(2).jpg
-            destinationFile = File(filesDir, fileName)
-          }
-
-          // Copy file to application folder.
-          val isCopySuccess = copyFile(sourceFile, destinationFile)
-
-          if (isCopySuccess) {
-            appFolderImages.add(destinationFile.path)
-          }
-        }
-
+        // Copy chosen files to app folder
+        appFolderImages = copyFileToAppFolder(mImages, folderImages)
+        appFolderDocuments = copyFileToAppFolder(mDocuments, folderDocuments)
 
         // Save memory to database
-        val memory = Memory(-1, title, text, mTags, appFolderImages)
+        val memory = Memory(-1, title, text, mTags, appFolderImages, appFolderDocuments)
         val database = MemoryDatabase(this, null)
         database.addMemory(memory)
 
@@ -152,9 +138,11 @@ class AddMemoryActivity : AppCompatActivity() {
         textEditText.setText("")
         tagEditText.setText("")
         tagContainer.removeAllViews()
-        imagesContainer.removeAllViews()
+        imageContainer.removeAllViews()
+        documentContainer.removeAllViews()
         mTags.clear()
         mImages.clear()
+        mDocuments.clear()
       }
     }
   }
@@ -166,11 +154,12 @@ class AddMemoryActivity : AppCompatActivity() {
   private fun setupAddImageButton(button : LinearLayout){
     button.setOnClickListener {
 
-      val intent = Intent(ACTION_OPEN_DOCUMENT)
-      intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-      intent.addCategory(Intent.CATEGORY_OPENABLE)
-      intent.type = "image/*"
-      startActivityForResult(Intent.createChooser(intent, "Select an app to add images"), PICK_IMAGE_MULTIPLE)
+      val intent = Intent(ACTION_OPEN_DOCUMENT).apply {
+        putExtra(EXTRA_ALLOW_MULTIPLE, true)
+        addCategory(CATEGORY_OPENABLE)
+        type = "image/*"
+      }
+      startActivityForResult(createChooser(intent, "Select an app to add images"), PICK_IMAGE_MULTIPLE)
     }
   }
 
@@ -208,78 +197,40 @@ class AddMemoryActivity : AppCompatActivity() {
   }
 
 
-  private fun getPathListFromURI(uri: Uri): String {
-    val path: String = uri.path!! // uri = any content Uri
 
-    val databaseUri: Uri
-    val selection: String?
-    val selectionArgs: Array<String>?
 
-    if (path.contains("/document/image:")) {
-      // Files selected from "Documents"
-      databaseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-      selection = "_id=?"
-      selectionArgs = arrayOf(DocumentsContract.getDocumentId(uri).split(":")[1])
-    }
+  private fun takeImageFromChooser(intent: Intent): MutableList<String>{
+    val list = mutableListOf<String>()
+    if (intent.clipData != null) {
+      val count = intent.clipData!!.itemCount
+      for (i in 0 until count) {
 
-    else {
-      // Files selected from all other sources, especially on Samsung devices
-      databaseUri = uri
-      selection = null
-      selectionArgs = null
-    }
+        val uri: Uri = intent.clipData!!.getItemAt(i).uri
+        val selectedFilePath = FilePath().getPath(this, uri)
 
-    try {
-      val projection = arrayOf(
-        MediaStore.Images.Media.DATA,
-        MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.ORIENTATION,
-        MediaStore.Images.Media.DATE_TAKEN
-      )
-
-      // Some example data to query
-      val cursor = contentResolver.query(
-        databaseUri,
-        projection, selection, selectionArgs, null
-      )
-
-      var filePath = ""
-      if (cursor!!.moveToFirst()) {
-        val columnIndex = cursor.getColumnIndex(projection[0])
-        filePath = cursor.getString(columnIndex)
-        Log.d(TAG, "filePath: $filePath")
+        list.add(selectedFilePath!!)
       }
 
-      cursor.close()
+    } else if (intent.data != null) {
+      val uri: Uri = intent.data!!
+      val selectedFilePath = FilePath().getPath(this, uri)
 
-      return filePath
-
-    } catch (e: Exception) {
-      Log.e(TAG, e.message, e)
+      list.add(selectedFilePath!!)
     }
-    return ""
+
+    return list
   }
 
 
 
 
   private fun setupImageContainer(intent: Intent) {
-    // Take images from chooser
-    if (intent.clipData != null) {
-      val count = intent.clipData!!.itemCount
-      for (i in 0 until count) {
-        val imageUri: Uri = intent.clipData!!.getItemAt(i).uri
-        mImages.add(getPathListFromURI(imageUri))
-      }
-
-    } else if (intent.data != null) {
-      val imageUri: Uri = intent.data!!
-      mImages.add(getPathListFromURI(imageUri))
-    }
-
+    // Take images from chooser to mImages list
+    val list = takeImageFromChooser(intent)
+    mImages.addAll(list)
 
     // Empty image container for any case
-    imagesContainer.removeAllViews()
+    imageContainer.removeAllViews()
 
     // Put images to image container
     for (imagePath in mImages) {
@@ -287,14 +238,14 @@ class AddMemoryActivity : AppCompatActivity() {
       val view = LayoutInflater.from(this).inflate(R.layout.list_row_image_container, null)
 
       val imageView = view.imageView
-      val pathTextView = view.imagePathTextView
+      val pathTextView = view.pathTextView
       val deleteImageView = view.deleteImageView
 
       // Setup image view
       val imgFile = File(imagePath)
       if (imgFile.exists()) {
 
-        Glide.with(this).load(imgFile).into(imageView)
+        Glide.with(this).load(imagePath).into(imageView)
       }
 
       // Setup path text view
@@ -304,17 +255,18 @@ class AddMemoryActivity : AppCompatActivity() {
       deleteImageView.setOnClickListener{
         val parent = it.parent as LinearLayout
 
+        // Get position of the image
+        val viewPosition = (parent.parent as LinearLayout).indexOfChild(parent)
+
         // Delete image from container
-        imagesContainer.removeView(parent)
+        imageContainer.removeView(parent)
 
         // Delete image from list
-        val textView = parent.getChildAt(1) as TextView
-        val path = textView.text
-        mImages.remove(path)
+        mImages.removeAt(viewPosition)
       }
 
       // Add list row to  image container linear layout
-      imagesContainer.addView(view)
+      imageContainer.addView(view)
     }
   }
 
@@ -322,41 +274,89 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
   private fun setupDocumentsContainer(intent: Intent){
-    // Take files from chooser
-    if (intent.clipData != null) {
-      val count = intent.clipData!!.itemCount
-      for (i in 0 until count) {
-        val fileUri: Uri = intent.clipData!!.getItemAt(i).uri
-        getPathListFromURI(fileUri)
+    // Take documents from chooser to mDocuments list
+    val list = takeImageFromChooser(intent)
+    mDocuments.addAll(list)
+
+
+    // Empty image container for any case
+    documentContainer.removeAllViews()
+
+    // Put documents to document container
+    for (documentPath in mDocuments) {
+
+      val view = LayoutInflater.from(this).inflate(R.layout.list_row_image_container, null)
+
+      val imageView = view.imageView
+      val pathTextView = view.pathTextView
+      val deleteImageView = view.deleteImageView
+
+      // Setup image view
+      imageView.setImageResource(R.drawable.document_file)
+
+      // Setup path text view
+      val file = File(documentPath)
+      pathTextView.text = file.name
+
+      // Setup delete image view
+      deleteImageView.setOnClickListener{
+        val parent = it.parent as LinearLayout
+
+        // Get position of the image
+        val viewPosition = (parent.parent as LinearLayout).indexOfChild(parent)
+
+        // Delete document from container
+        documentContainer.removeView(parent)
+
+        // Delete document from list
+        mDocuments.removeAt(viewPosition)
       }
 
-    } else if (intent.data != null) {
-      val fileUri: Uri = intent.data!!
-      getPathListFromURI(fileUri)
+      // Add list row to  image container linear layout
+      documentContainer.addView(view)
     }
-
   }
 
 
 
 
   @Throws(IOException::class)
-  private fun copyFile(src: File, dst: File): Boolean {
+  private fun copyFileToAppFolder(sourceList: MutableList<String>, folder: String): MutableList<String> {
 
-    if (src.absolutePath.toString() == dst.absolutePath.toString()) {
-      return false
-    }
-    else {
-      val inChannel: FileChannel = FileInputStream(src).channel
-      val outChannel: FileChannel = FileOutputStream(dst).channel
+    val destinationList = mutableListOf<String>()
+
+    for (path in sourceList) {
+      val sourceFile = File(path)
+      val sourceFileWithFolder = folder + sourceFile.name
+      val sourceFileOnlyName = sourceFile.nameWithoutExtension
+      val sourceFileExtension = sourceFile.extension
+
+      var destinationFile = File(filesDir, sourceFileWithFolder)
+
+      var count = 1
+
+      // If file exist change its name.
+      while (destinationFile.exists()) {
+        count++
+        val fileNameAddition = "($count)"
+        val fileName = "$folder$sourceFileOnlyName$fileNameAddition.$sourceFileExtension" // ...\Images\fileName(2).jpg
+        destinationFile = File(filesDir, fileName)
+      }
+
+      // Copy file to application folder.
+      val inChannel: FileChannel = FileInputStream(sourceFile).channel
+      val outChannel: FileChannel = FileOutputStream(destinationFile).channel
       try {
         inChannel.transferTo(0, inChannel.size(), outChannel)
+        destinationList.add(destinationFile.path)
+        Log.d(TAG, "destinationFile: $destinationFile")
       }
       finally {
         inChannel.close()
         outChannel.close()
       }
     }
-    return true
+
+    return destinationList
   }
 }
