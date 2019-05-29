@@ -6,8 +6,9 @@
 
   <color name="black">#000000</color>
   <color name="white">#FFFFFF</color>
-  <color name="space_grey">#44444B</color>
+  <color name="space_grey_transparent">#CB44444B</color>
   <color name="grey_transparent">#80CECECE</color>
+  <color name="white_transparent">#80FFFFFF</color>
   <color name="link_color">#4688F2</color>
   <color name="delete_red">#E20D0D</color>
   <color name="edit_yellow">#DDA90D</color>

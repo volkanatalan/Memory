@@ -2,6 +2,7 @@ package com.volkanatalan.memory.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,11 @@ import org.apmem.tools.layouts.FlowLayout
 import android.text.style.UnderlineSpan
 import android.text.SpannableString
 import com.volkanatalan.memory.R
-import com.volkanatalan.memory.classes.FileToImageResource
+import com.volkanatalan.memory.helpers.FileIconHelper
+import com.volkanatalan.memory.classes.Link
 import com.volkanatalan.memory.classes.Memory
 import kotlinx.android.synthetic.main.list_item_document.view.*
+import kotlinx.android.synthetic.main.memory_image.view.*
 
 
 class SearchListViewAdapter(private val context: Context,
@@ -30,8 +33,8 @@ class SearchListViewAdapter(private val context: Context,
     lateinit var imageContainer: LinearLayout
     lateinit var textTextView: TextView
     lateinit var tagContainer: FlowLayout
-    lateinit var linkContainer: LinearLayout
-    lateinit var documentContainer: GridLayout
+    lateinit var linkBase: LinearLayout
+    lateinit var documentBase: LinearLayout
   }
 
 
@@ -52,8 +55,8 @@ class SearchListViewAdapter(private val context: Context,
       holder.imageContainer = view.imageContainer
       holder.textTextView = view.textTextView
       holder.tagContainer = view.tagContainer
-      holder.linkContainer = view.linkContainer
-      holder.documentContainer = view.documentContainer
+      holder.linkBase = view.linkBase
+      holder.documentBase = view.documentBase
 
       view.tag = holder
     }
@@ -67,8 +70,8 @@ class SearchListViewAdapter(private val context: Context,
     val imageContainer = holder.imageContainer
     val textTextView = holder.textTextView
     val tagContainer = holder.tagContainer
-    val linkContainer = holder.linkContainer
-    val documentContainer = holder.documentContainer
+    val linkBase = holder.linkBase
+    val documentBase = holder.documentBase
 
     titleTextView.text = memory.title
     if (memory.text != ""){
@@ -76,9 +79,9 @@ class SearchListViewAdapter(private val context: Context,
       textTextView.text = memory.text
     }
 
-    setupImageContainer(memory, imageContainer)
-    setupLinkContainer(memory, linkContainer)
-    setupDocumentContainer(memory, documentContainer)
+    setupImageContainer(memory.images, imageContainer)
+    setupLinkContainer(memory.links, linkBase)
+    setupDocumentContainer(memory.documents, documentBase)
     setupTagContainer(memory.tags!!, tagContainer)
 
     return view
@@ -87,28 +90,49 @@ class SearchListViewAdapter(private val context: Context,
 
 
 
-  private fun setupImageContainer(memory: Memory, container: LinearLayout) {
-    val images = memory.images
-    if (images!!.size > 0) {
+  private fun setupImageContainer(images: MutableList<String>?, container: LinearLayout) {
+    if (images != null && images.size > 0) {
 
       container.removeAllViews()
       container.visibility = View.VISIBLE
 
       for (imagePath in images) {
-        val imageView = LayoutInflater.from(context).inflate(R.layout.memory_image, null) as ImageView
 
-
-        // Setup image view
         val imgFile = File(imagePath)
         if (imgFile.exists()) {
 
-          val requestManager = Glide.with(context)
-          val requestBuilder = requestManager.load(imgFile)
-          requestBuilder.into(imageView)
-        }
+          // Get image dimensions
+          val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+          BitmapFactory.decodeFile(imgFile.path, options)
+          val imageWidth: Int = options.outWidth
+          val imageHeight: Int = options.outHeight
+          val imageRatio = imageWidth.toFloat() / imageHeight.toFloat()
 
-        // Add list row to  image container linear layout
-        container.addView(imageView)
+          val screenWidth = context.resources.displayMetrics.widthPixels
+          val pagePadding = context.resources.getDimensionPixelSize(R.dimen.page_padding) * 2
+          val sectionPadding = context.resources.getDimensionPixelSize(R.dimen.section_padding) * 2
+          val imageMaxWidth = screenWidth - pagePadding - sectionPadding
+          val imageMaxHeight = (imageMaxWidth / imageRatio).toInt()
+
+
+          // Create root
+          var root = LinearLayout(context)
+          val params = LinearLayout.LayoutParams(imageMaxWidth, imageMaxHeight)
+          root.layoutParams = params
+
+
+          // Inflate root
+          root = LayoutInflater.from(context).inflate(R.layout.memory_image, root) as LinearLayout
+          val imageView = root.memory_image_view
+
+
+          // Setup image view
+          Glide.with(context).load(imgFile).into(imageView)
+
+
+          // Add list row to  image container linear layout
+          container.addView(root)
+        }
       }
     }
   }
@@ -116,17 +140,16 @@ class SearchListViewAdapter(private val context: Context,
 
 
 
-  private fun setupLinkContainer(memory: Memory, container: LinearLayout){
-    val links = memory.links
+  private fun setupLinkContainer(links: MutableList<Link>?, base: LinearLayout){
     if (links != null && links.size > 0) {
 
-      container.removeAllViews()
-      container.visibility = View.VISIBLE
+      base.linkContainer.removeAllViews()
+      base.visibility = View.VISIBLE
 
       for (link in links){
         // Inflate link list item
-        val linkRowLinearLayout = LayoutInflater.from(context).inflate(R.layout.list_item_link, null)
-        val linkTextView = linkRowLinearLayout.linkTextView
+        val linkLayout = LayoutInflater.from(context).inflate(R.layout.list_item_link, null)
+        val linkTextView = linkLayout.linkTextView
 
         // Put underline to text
         var linkTitle = link.title
@@ -135,6 +158,8 @@ class SearchListViewAdapter(private val context: Context,
         val content = SpannableString(linkTitle)
         content.setSpan(UnderlineSpan(), 0, content.length, 0)
         linkTextView.text = content
+
+        base.linkContainer.addView(linkLayout)
       }
     }
   }
@@ -142,18 +167,17 @@ class SearchListViewAdapter(private val context: Context,
 
 
 
-  private fun setupDocumentContainer(memory: Memory, container: GridLayout){
-    val documents = memory.documents
+  private fun setupDocumentContainer(documents: MutableList<String>?, base: LinearLayout){
     if (documents != null && documents.size > 0) {
 
-      container.removeAllViews()
-      container.visibility = View.VISIBLE
+      base.documentContainer.removeAllViews()
+      base.visibility = View.VISIBLE
 
       for (document in documents){
         // Inflate link list item
-        val documentRow = LayoutInflater.from(context).inflate(R.layout.list_item_document, null)
-        val documentIconImageView = documentRow.documentIconImageView
-        val documentNameTextView = documentRow.documentNameTextView
+        val documentLayout = LayoutInflater.from(context).inflate(R.layout.list_item_document, LinearLayout(context))
+        val documentIconImageView = documentLayout.documentIconImageView
+        val documentNameTextView = documentLayout.documentNameTextView
 
         // Setup document name text view
         val file = File(document)
@@ -161,9 +185,10 @@ class SearchListViewAdapter(private val context: Context,
         documentNameTextView.text = fileName
 
         // Setup document icon image view
-        val fileIconResource = FileToImageResource().getResource(file)
+        val fileIconResource = FileIconHelper().getResource(file)
         documentIconImageView.setImageResource(fileIconResource)
 
+        base.documentContainer.addView(documentLayout)
       }
     }
   }

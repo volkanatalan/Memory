@@ -47,9 +47,11 @@
     android:id="@+id/linkBase"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="5dp"
     android:layout_marginBottom="10dp"
     android:visibility="gone"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/subsection_bg">
 
     <LinearLayout
       android:id="@+id/linkLabelBase"
@@ -96,14 +98,17 @@
     android:id="@+id/documentBase"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="5dp"
     android:layout_marginBottom="10dp"
     android:visibility="gone"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/subsection_bg">
 
     <LinearLayout
       android:id="@+id/documentLabelBase"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="5dp"
       android:gravity="center_vertical">
 
       <ImageView

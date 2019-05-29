@@ -8,12 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.*
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_add_memory.*
 import com.bumptech.glide.Glide
 import com.volkanatalan.memory.*
+import com.volkanatalan.memory.classes.FilePath
+import com.volkanatalan.memory.helpers.FileIconHelper
+import com.volkanatalan.memory.classes.Link
+import com.volkanatalan.memory.classes.Memory
+import com.volkanatalan.memory.databases.MemoryDatabase
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.deleteImageView
 import kotlinx.android.synthetic.main.list_item_link.view.*
@@ -116,8 +120,8 @@ class AddMemoryActivity : AppCompatActivity() {
         val appFolderImages: MutableList<String>
         val appFolderDocuments: MutableList<String>
 
-        val folderImages = "Images\\"
-        val folderDocuments = "Documents\\"
+        val folderImages = "Images"
+        val folderDocuments = "Documents"
 
         // Copy chosen files to app folder
         appFolderImages = copyFileToAppFolder(mImages, folderImages)
@@ -391,7 +395,7 @@ class AddMemoryActivity : AppCompatActivity() {
       pathTextView.text = file.name
 
       // Setup document icon image view
-      val icon = FileToImageResource().getResource(file)
+      val icon = FileIconHelper().getResource(file)
       imageView.setImageResource(icon)
 
       // Setup delete image view
@@ -421,32 +425,33 @@ class AddMemoryActivity : AppCompatActivity() {
 
     val destinationList = mutableListOf<String>()
 
+    // Create an internal directory if doesn't exist
+    val directory = File(filesDir, folder)
+    if (!directory.exists()) directory.mkdirs()
+
+
     for (path in sourceList) {
       val sourceFile = File(path)
-      val sourceFileWithFolder = folder + sourceFile.name
       val sourceFileOnlyName = sourceFile.nameWithoutExtension
       val sourceFileExtension = sourceFile.extension
-
-      var destinationFile = File(filesDir, sourceFileWithFolder)
-
-      var count = 1
+      var destinationFile = File(directory, sourceFile.name)
 
       // If file exist change its name.
+      var count = 1
       while (destinationFile.exists()) {
         count++
         val fileNameAddition = "($count)"
-        val fileName = "$folder$sourceFileOnlyName$fileNameAddition.$sourceFileExtension" // ...\Images\fileName(2).jpg
-        destinationFile = File(filesDir, fileName)
+        val fileName = "$sourceFileOnlyName$fileNameAddition.$sourceFileExtension" // .../Images/fileName(2).jpg
+        destinationFile = File(directory, fileName)
       }
 
-      // Copy file to application folder.
+      // Copy file to internal storage.
       if (sourceFile.exists()) {
         val inChannel: FileChannel = FileInputStream(sourceFile).channel
         val outChannel: FileChannel = FileOutputStream(destinationFile).channel
         try {
           inChannel.transferTo(0, inChannel.size(), outChannel)
           destinationList.add(destinationFile.path)
-          Log.d(TAG, "destinationFile: $destinationFile")
         } finally {
           inChannel.close()
           outChannel.close()
