@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:padding="10dp"
+  android:background="@drawable/section_bg">
+
+  <TextView
+    android:id="@+id/titleTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:textStyle="bold"
+    android:textSize="20sp"
+    android:textColor="@color/black"
+    android:text="Memory Title"
+  />
+
+  <LinearLayout
+    android:id="@+id/imageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:visibility="gone"
+    android:orientation="vertical"/>
+
+  <TextView
+    android:id="@+id/textTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:visibility="gone"
+    android:textColor="@color/black"
+    android:text="@string/dummy_text"
+    android:textSize="16sp"/>
+
+
+
+
+
+
+  <LinearLayout
+    android:id="@+id/linkBase"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:visibility="gone"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:id="@+id/linkLabelBase"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="5dp"
+      android:gravity="center_vertical">
+
+      <ImageView
+        android:id="@+id/linkIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/link"/>
+
+      <TextView
+        android:id="@+id/linkLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="5dp"
+        android:text="@string/links"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textSize="@dimen/label_text_size"
+        tools:ignore="RtlSymmetry"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/linkContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="10dp"
+      android:orientation="vertical"/>
+
+  </LinearLayout>
+
+
+
+
+
+
+  <LinearLayout
+    android:id="@+id/documentBase"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:visibility="gone"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:id="@+id/documentLabelBase"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical">
+
+      <ImageView
+        android:id="@+id/documentIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/documents_icon"/>
+
+      <TextView
+        android:id="@+id/documentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="5dp"
+        android:text="@string/documents"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textSize="@dimen/label_text_size"
+        tools:ignore="RtlSymmetry"/>
+
+    </LinearLayout>
+
+    <GridLayout
+      android:id="@+id/documentContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="10dp"
+      android:orientation="horizontal"/>
+
+  </LinearLayout>
+
+
+
+  
+
+
+  <org.apmem.tools.layouts.FlowLayout
+    android:id="@+id/tagContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp" />
+
+
+
+  
+
+  <LinearLayout
+    android:id="@+id/buttonContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:id="@+id/deleteButtonImageView"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:layout_marginEnd="5dp"
+      android:background="@color/delete_red"
+      app:srcCompat="@drawable/delete_memory"/>
+
+    <ImageView
+      android:id="@+id/editButtonImageView"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
+      android:background="@color/edit_yellow"
+      app:srcCompat="@drawable/edit_memory"/>
+
+  </LinearLayout>
+</LinearLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="net.cafepp.mydatabase">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.volkanatalan.memory">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <activity android:name=".MainActivity"
+        <activity android:name="com.volkanatalan.memory.activities.MainActivity"
                   android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddMemoryActivity"/>
+        <activity android:name="com.volkanatalan.memory.activities.AddMemoryActivity"/>
 
     </application>
 
