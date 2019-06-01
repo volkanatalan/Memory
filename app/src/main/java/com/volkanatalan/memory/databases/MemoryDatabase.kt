@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.volkanatalan.memory.classes.Memory
 
 class MemoryDatabase(context: Context, factory: CursorFactory?) :
@@ -55,30 +56,95 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
 
 
-  fun addMemory(memory: Memory) {
-    val values = ContentValues()
-    values.put(COLUMN_TAGS, memory.tags.toString())
-    values.put(COLUMN_LINKS, memory.linksToString())
-    values.put(COLUMN_IMAGES, memory.images.toString())
-    values.put(COLUMN_DOCUMENT, memory.documents.toString())
-    values.put(COLUMN_TITLE, memory.title)
-    values.put(COLUMN_TEXT, memory.text)
+
+  fun hasMemory(id: Int): Boolean{
+    val db = this.readableDatabase
+    val c = db.rawQuery("SELECT $COLUMN_ID FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
+    val has = c.moveToNext()
+
+    c.close()
+    db.close()
+
+    return has
+  }
+
+
+
+
+  fun memorize(memory: Memory) {
     val db = this.writableDatabase
-    db.insert(TABLE_MEMORIES, null, values)
+
+    if (memory.id == -1 || !hasMemory(memory.id)) {
+      val values = ContentValues()
+      values.put(COLUMN_TAGS, memory.tags.toString())
+      values.put(COLUMN_LINKS, memory.linksToString())
+      values.put(COLUMN_IMAGES, memory.images.toString())
+      values.put(COLUMN_DOCUMENT, memory.documents.toString())
+      values.put(COLUMN_TITLE, memory.title)
+      values.put(COLUMN_TEXT, memory.text)
+      db.insert(TABLE_MEMORIES, null, values)
+    }
+
+    else{
+      update(memory)
+    }
+
+
     db.close()
   }
 
 
 
 
-  fun getMemories(text:String): MutableList<Memory> {
+
+  fun forget(memory: Memory){
+    val db = this.writableDatabase
+    db.delete(TABLE_MEMORIES, "$COLUMN_ID = ${memory.id}", null)
+    db.close()
+  }
+
+
+
+
+
+  fun rememberMemories(text:String): MutableList<Memory> {
+    var subText = text
+    val subTextList = mutableListOf<String>()
+    
+    while (subText.isNotEmpty()){
+      val end = subText.indexOf(" ")
+      subText = if (end > -1) {
+        subTextList.add(subText.substring(0, end))
+        subText.substring(end + 1, subText.length)
+      } else {
+        subTextList.add(subText)
+        ""
+      }
+    }
+  
+    var tagsConditionText = ""
+    var titleConditionText = ""
+    for (index in 0 until subTextList.size) {
+      if (index != subTextList.size - 1) {
+        tagsConditionText += "$COLUMN_TAGS LIKE '%${subTextList[index]}%' AND "
+        titleConditionText += "$COLUMN_TITLE LIKE '%${subTextList[index]}%' AND "
+      }
+      else {
+        tagsConditionText += "$COLUMN_TAGS LIKE '%${subTextList[index]}%'"
+        titleConditionText += "$COLUMN_TITLE LIKE '%${subTextList[index]}%'"
+      }
+    }
+    
+    
     val memories = mutableListOf<Memory>()
     val db = this.readableDatabase
-    val c = db.rawQuery(
-      "SELECT * FROM $TABLE_MEMORIES " +
-        "WHERE $COLUMN_TAGS LIKE '%$text%' " +
-        "OR $COLUMN_TITLE LIKE '%$text%';", null)
-
+    val query = "SELECT * FROM $TABLE_MEMORIES " +
+      "WHERE ($tagsConditionText) " +
+      "OR ($titleConditionText);"
+    
+    //Log.d("database", query)
+    
+    val c = db.rawQuery(query, null)
     while (c.moveToNext()) {
       val memory = Memory()
       memory.id = c.getInt(c.getColumnIndex(COLUMN_ID))
@@ -101,6 +167,47 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
 
 
+
+
+  fun rememberSomething(id: Int): Memory{
+    val db = this.readableDatabase
+    val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
+    c.moveToFirst()
+    val title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+    val text = c.getString(c.getColumnIndex(COLUMN_TEXT))
+    val tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
+    val links = Memory().linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
+    val images = stringToList(c.getString(c.getColumnIndex(COLUMN_IMAGES)))
+    val documents = stringToList(c.getString(c.getColumnIndex(COLUMN_DOCUMENT)))
+
+    val memory = Memory(id, title, text, tags, links, images, documents)
+
+    c.close()
+    db.close()
+
+    return memory
+  }
+
+
+
+
+
+  fun update(memory: Memory){
+    val db = this.writableDatabase
+    val values = ContentValues()
+    values.put(COLUMN_ID, memory.id)
+    values.put(COLUMN_TITLE, memory.title)
+    values.put(COLUMN_TEXT, memory.text)
+    values.put(COLUMN_TAGS, memory.tags.toString())
+    values.put(COLUMN_LINKS, memory.linksToString())
+    values.put(COLUMN_IMAGES, memory.images.toString())
+    values.put(COLUMN_DOCUMENT, memory.documents.toString())
+    db.update(TABLE_MEMORIES, values, "$COLUMN_ID = ?", arrayOf("${memory.id}"))
+  }
+
+
+
+
   private fun stringToList(text:String):MutableList<String> {
     val list = mutableListOf<String>()
     var mutableText = text
@@ -112,10 +219,9 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
       var end = mutableText.indexOf(",", 0, true)
       if (end == -1) end = mutableText.length
       val subtext = mutableText.substring(0, end)
-      if (end + 2 < mutableText.length)
-          mutableText = mutableText.substring(end + 2, mutableText.length)
-      else
-          mutableText = ""
+
+      mutableText = if (end + 2 < mutableText.length) mutableText.substring(end + 2, mutableText.length)
+      else ""
 
       list.add(subtext)
     }

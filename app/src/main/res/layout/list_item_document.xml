@@ -2,16 +2,17 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="80dp"
+  android:layout_width="@dimen/document_width"
   android:layout_height="wrap_content"
   android:orientation="vertical"
   android:gravity="center_horizontal"
-  android:background="@drawable/document_list_item_bg">
+  android:background="@drawable/bg_document">
 
   <ImageView
     android:id="@+id/documentIconImageView"
     android:layout_width="55dp"
     android:layout_height="55dp"
+    android:layout_marginTop="5dp"
     app:srcCompat="@drawable/file_txt"
     android:scaleType="centerInside"/>
 
@@ -22,7 +23,7 @@
     android:padding="5dp"
     android:textColor="@color/white"
     android:text="document.txt"
-    android:textSize="10sp"
+    android:textSize="12sp"
     android:textAlignment="center"/>
 
 </LinearLayout>

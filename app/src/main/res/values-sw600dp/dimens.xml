@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="label_text_size">18sp</dimen>
-    <dimen name="page_padding">10dp</dimen>
-    <dimen name="section_padding">10dp</dimen>
-    <dimen name="subsection_padding">5dp</dimen>
-    <dimen name="memory_top_bottom_margin">10dp</dimen>
+  <dimen name="h1">16sp</dimen>
+  <dimen name="h2">18sp</dimen>
+  <dimen name="h3">22sp</dimen>
+  <dimen name="h4">25sp</dimen>
+  <dimen name="h5">30sp</dimen>
+  
+  <dimen name="label_text_size">18sp</dimen>
+  <dimen name="page_padding">10dp</dimen>
+  <dimen name="section_padding">10dp</dimen>
+  <dimen name="subsection_padding">5dp</dimen>
+  <dimen name="memory_top_bottom_margin">10dp</dimen>
+  <dimen name="memory_image_bottom_margin">10dp</dimen>
 </resources>

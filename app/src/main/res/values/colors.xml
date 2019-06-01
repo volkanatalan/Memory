@@ -6,10 +6,16 @@
 
   <color name="black">#000000</color>
   <color name="white">#FFFFFF</color>
-  <color name="space_grey_transparent">#CB44444B</color>
+  <color name="grey">#808080</color>
+  <color name="transparent_black">#80000000</color>
+  <color name="document_bg">#CB44444B</color>
+  <color name="document_bg_click">#CB727279</color>
   <color name="grey_transparent">#80CECECE</color>
   <color name="white_transparent">#80FFFFFF</color>
-  <color name="link_color">#4688F2</color>
+  <color name="link">#4688F2</color>
+  <color name="link_click">#9B2424</color>
   <color name="delete_red">#E20D0D</color>
+  <color name="delete_red_click">#790C0C</color>
   <color name="edit_yellow">#DDA90D</color>
+  <color name="edit_yellow_click">#88680D</color>
 </resources>

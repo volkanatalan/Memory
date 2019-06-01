@@ -3,7 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:padding="5dp"
+  android:padding="8dp"
+  android:background="@drawable/bg_link"
   android:orientation="horizontal">
 
   <TextView
@@ -12,6 +13,6 @@
     android:layout_height="wrap_content"
     android:text="http://www.volkanatalan.com"
     android:textSize="16sp"
-    android:textColor="@color/link_color"/>
+    android:textColor="@color/link"/>
 
 </LinearLayout>

@@ -8,11 +8,21 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:icon="@drawable/memory_logo"
-        android:roundIcon="@drawable/memory_logo"
+        android:icon="@drawable/logo_memory"
+        android:roundIcon="@drawable/logo_memory"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+    
+        <provider
+          android:name="androidx.core.content.FileProvider"
+          android:authorities="${applicationId}"
+          android:grantUriPermissions="true"
+          android:exported="false">
+            <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/filepaths" />
+        </provider>
 
         <activity android:name="com.volkanatalan.memory.activities.MainActivity"
                   android:windowSoftInputMode="adjustPan">

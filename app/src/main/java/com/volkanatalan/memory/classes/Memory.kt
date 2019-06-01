@@ -1,21 +1,25 @@
 package com.volkanatalan.memory.classes
 
+
 class Memory(){
+
   var id: Int = -1
   var title: String = ""
   var text: String = ""
-  var tags: MutableList<String>? = null
-  var links: MutableList<Link>? = null
-  var images: MutableList<String>? = null
-  var documents: MutableList<String>? = null
+  var tags: MutableList<String> = mutableListOf()
+  var links: MutableList<Link> = mutableListOf()
+  var images: MutableList<String> = mutableListOf()
+  var documents: MutableList<String> = mutableListOf()
+
+
 
   constructor(id: Int,
               title: String,
               text: String,
-              tags: MutableList<String>?,
-              links: MutableList<Link>?,
-              images: MutableList<String>?,
-              documents: MutableList<String>?) : this() {
+              tags: MutableList<String>,
+              links: MutableList<Link>,
+              images: MutableList<String>,
+              documents: MutableList<String>) : this() {
 
     this.id = id
     this.title = title
@@ -30,16 +34,15 @@ class Memory(){
 
 
   fun linksToString(): String{
-    var text: String = ""
+    var text = ""
 
-    if (links != null){
-      for (link in links!!){
-        text += "[${link.title},${link.address}]"
-      }
+    for (link in links){
+      text += "[${link.title},${link.address}]"
     }
 
     return text
   }
+
 
 
 

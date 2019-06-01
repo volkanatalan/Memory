@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  tools:context="com.volkanatalan.memory.activities.MainActivity"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  
+  <androidx.appcompat.widget.LinearLayoutCompat
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical"
-  android:background="@drawable/bg1"
-  tools:context="com.volkanatalan.memory.activities.MainActivity">
+  android:background="@drawable/bg1">
 
   <androidx.appcompat.widget.Toolbar
     android:id="@+id/toolbar"
@@ -17,35 +21,52 @@
     android:elevation="4dp"
     android:theme="@style/ToolbarTheme"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-  <LinearLayout
+    
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:paddingStart="@dimen/page_padding"
+      android:paddingEnd="@dimen/page_padding"
+      android:paddingBottom="@dimen/page_padding"
+      android:orientation="vertical">
+  
+      <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_edit_text_height"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/search"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
+        android:singleLine="true" />
+  
+      <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+  
+        <LinearLayout
+          android:id="@+id/searchResultsContainer"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"/>
+        
+      </ScrollView>
+    </LinearLayout>
+  </androidx.appcompat.widget.LinearLayoutCompat>
+  
+  <FrameLayout
+    android:id="@+id/interlayer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/page_padding"
-    android:orientation="vertical">
+    android:background="@color/transparent_black"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"/>
+  
+  <FrameLayout
+    android:id="@+id/fragmentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
-    <EditText
-      android:id="@+id/searchEditText"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="10dp"
-      android:hint="@string/search"
-      android:inputType="text"
-      android:selectAllOnFocus="true"
-      android:singleLine="true" />
-
-    <ScrollView
-      android:id="@+id/scrollView"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
-
-      <LinearLayout
-        android:id="@+id/searchResultsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
-    </ScrollView>
-
-  </LinearLayout>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</FrameLayout>
