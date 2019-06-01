@@ -1,9 +1,12 @@
 package com.volkanatalan.memory.classes
 
+import java.util.*
+
 
 class Memory(){
 
   var id: Int = -1
+  var date: Date = Calendar.getInstance().time
   var title: String = ""
   var text: String = ""
   var tags: MutableList<String> = mutableListOf()
@@ -14,6 +17,7 @@ class Memory(){
 
 
   constructor(id: Int,
+              date: Date,
               title: String,
               text: String,
               tags: MutableList<String>,
@@ -22,6 +26,7 @@ class Memory(){
               documents: MutableList<String>) : this() {
 
     this.id = id
+    this.date = date
     this.title = title
     this.text = text
     this.tags = tags

@@ -2,9 +2,7 @@ package com.volkanatalan.memory.activities
 
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -63,7 +61,13 @@ class MainActivity : AppCompatActivity() {
     if (resultCode == Activity.RESULT_OK && intent != null) {
 
       if (requestCode == EDIT_MEMORY) {
-        reminiscenceHelper.editMemory(intent.getSerializableExtra("editMemory") as Memory)
+        val memoryId = intent.getIntExtra("updateMemory", -1)
+        if (memoryId > -1) {
+          val database = MemoryDatabase(this@MainActivity, null)
+          mMemories = database.rememberMemories(searchEditText.text.toString())
+          database.close()
+          reminiscenceHelper.remember(mMemories)
+        }
       }
     }
   }
@@ -125,6 +129,7 @@ class MainActivity : AppCompatActivity() {
         if (searchText.length > 1) {
           val database = MemoryDatabase(this@MainActivity, null)
           mMemories = database.rememberMemories(searchText)
+          database.close()
           reminiscenceHelper.remember(mMemories)
         }
         else reminiscenceHelper.forget()
@@ -205,7 +210,7 @@ class MainActivity : AppCompatActivity() {
     }
     
     valueAnimator.interpolator = LinearInterpolator()
-    valueAnimator.duration = 500
+    valueAnimator.duration = 300
     valueAnimator.doOnEnd {
       isEditTextAnimating = false
       isEditTextHidden = hide

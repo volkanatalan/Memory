@@ -28,6 +28,8 @@ import kotlinx.android.synthetic.main.list_item_link.view.*
 import kotlinx.android.synthetic.main.list_item_tag_container.view.*
 import java.io.*
 import java.nio.channels.FileChannel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AddMemoryActivity : AppCompatActivity() {
@@ -111,7 +113,7 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
     when {
-      title == "" -> Toast.makeText(this, "Title cannot be empty!", Toast.LENGTH_SHORT).show()
+      mMemory.title == "" -> Toast.makeText(this, "Title cannot be empty!", Toast.LENGTH_SHORT).show()
 
       mMemory.tags.size == 0 -> Toast.makeText(this, "Please enter a tag!", Toast.LENGTH_SHORT).show()
 
@@ -141,13 +143,13 @@ class AddMemoryActivity : AppCompatActivity() {
 
         mMemory.images = copyFileToAppFolder(mMemory.images, folderImages)
         mMemory.documents = copyFileToAppFolder(mMemory.documents, folderDocuments)
+        if (!isEditing) { mMemory.date = Calendar.getInstance().time }
 
         // Save memory to database
         val database = MemoryDatabase(this, null)
         database.memorize(mMemory)
 
         // Clear activity
-        mMemory = Memory()
         tagEditText.setText("")
         textEditText.setText("")
         titleEditText.setText("")
@@ -157,14 +159,27 @@ class AddMemoryActivity : AppCompatActivity() {
         linkContainer.removeAllViews()
         imageContainer.removeAllViews()
         documentContainer.removeAllViews()
+  
 
         Toast.makeText(this, "Memorized successfully.", Toast.LENGTH_SHORT).show()
-
-        // Scroll to top
-        scrollView.scrollTo(0, 0)
-
-        // Focus on title edit text
-        titleEditText.requestFocus()
+        
+        
+        if (isEditing){
+          val updateIntent = Intent()
+          updateIntent.putExtra("updateMemory", mMemory.id)
+          setResult(Activity.RESULT_OK, updateIntent)
+          finish()
+        }
+        
+        else {
+          mMemory = Memory()
+          
+          // Scroll to top
+          scrollView.scrollTo(0, 0)
+  
+          // Focus on title edit text
+          titleEditText.requestFocus()
+        }
       }
     }
   }

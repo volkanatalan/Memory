@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.volkanatalan.memory.classes.Memory
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MemoryDatabase(context: Context, factory: CursorFactory?) :
   SQLiteOpenHelper(context,
@@ -18,29 +20,32 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   companion object {
     private val DATABASE_VERSION = 1
     private val DATABASE_NAME = "MemoryDatabase.db"
-    val TABLE_MEMORIES = "Memories"
-    val COLUMN_ID = "_id"
-    val COLUMN_TAGS = "Tags"
-    val COLUMN_LINKS = "Links"
-    val COLUMN_IMAGES = "Images"
-    val COLUMN_DOCUMENT = "Documents"
-    val COLUMN_TITLE = "Titles"
-    val COLUMN_TEXT = "Text"
+    private val TABLE_MEMORIES = "Memories"
+    private val COLUMN_ID = "_id"
+    private val COLUMN_DATE = "Date"
+    private val COLUMN_TAGS = "Tags"
+    private val COLUMN_LINKS = "Links"
+    private val COLUMN_IMAGES = "Images"
+    private val COLUMN_DOCUMENT = "Documents"
+    private val COLUMN_TITLE = "Titles"
+    private val COLUMN_TEXT = "Text"
   }
 
 
 
 
   override fun onCreate(db: SQLiteDatabase) {
-    val createTable = ("CREATE TABLE " +
-            TABLE_MEMORIES + "(" +
-            COLUMN_ID + " INTEGER PRIMARY KEY," +
-            COLUMN_TAGS + " TEXT," +
-            COLUMN_LINKS + " TEXT," +
-            COLUMN_IMAGES + " TEXT," +
-            COLUMN_DOCUMENT + " TEXT," +
-            COLUMN_TITLE + " TEXT," +
-            COLUMN_TEXT + " TEXT" + ")")
+    val createTable = (
+      "CREATE TABLE " +
+      TABLE_MEMORIES + "(" +
+      COLUMN_ID + " INTEGER PRIMARY KEY," +
+      COLUMN_DATE + " TEXT," +
+      COLUMN_TAGS + " TEXT," +
+      COLUMN_LINKS + " TEXT," +
+      COLUMN_IMAGES + " TEXT," +
+      COLUMN_DOCUMENT + " TEXT," +
+      COLUMN_TITLE + " TEXT," +
+      COLUMN_TEXT + " TEXT" + ")")
 
     db.execSQL(createTable)
   }
@@ -76,6 +81,7 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
     if (memory.id == -1 || !hasMemory(memory.id)) {
       val values = ContentValues()
+      values.put(COLUMN_DATE, SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault()).format(memory.date))
       values.put(COLUMN_TAGS, memory.tags.toString())
       values.put(COLUMN_LINKS, memory.linksToString())
       values.put(COLUMN_IMAGES, memory.images.toString())
@@ -148,8 +154,10 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     while (c.moveToNext()) {
       val memory = Memory()
       memory.id = c.getInt(c.getColumnIndex(COLUMN_ID))
-      memory.text = c.getString(c.getColumnIndex(COLUMN_TEXT))
       memory.title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+      memory.date = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault())
+        .parse(c.getString(c.getColumnIndex(COLUMN_DATE)))
+      memory.text = c.getString(c.getColumnIndex(COLUMN_TEXT))
       memory.tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
       memory.links = Memory()
           .linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
@@ -174,13 +182,15 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
     c.moveToFirst()
     val title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+    val date = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault())
+      .parse(c.getString(c.getColumnIndex(COLUMN_DATE)))
     val text = c.getString(c.getColumnIndex(COLUMN_TEXT))
     val tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
     val links = Memory().linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
     val images = stringToList(c.getString(c.getColumnIndex(COLUMN_IMAGES)))
     val documents = stringToList(c.getString(c.getColumnIndex(COLUMN_DOCUMENT)))
 
-    val memory = Memory(id, title, text, tags, links, images, documents)
+    val memory = Memory(id, date, title, text, tags, links, images, documents)
 
     c.close()
     db.close()

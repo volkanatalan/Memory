@@ -31,6 +31,8 @@ import kotlinx.android.synthetic.main.memory_image.view.*
 import kotlinx.android.synthetic.main.tag_view.view.*
 import org.apmem.tools.layouts.FlowLayout
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -60,8 +62,9 @@ class ReminiscenceHelper(
 
       // Inflate root
       root = LayoutInflater.from(activity).inflate(R.layout.list_item_memory, root) as LinearLayout
-
+  
       val titleTextView = root.titleTextView
+      val dateTextView = root.dateTextView
       val imageContainer = root.imageContainer
       val textTextView = root.textTextView
       val tagContainer = root.tagContainer
@@ -79,10 +82,11 @@ class ReminiscenceHelper(
       }
 
 
+      setupDateSection(memory.date, dateTextView)
       setupImageContainer(memory.images, imageContainer)
       setupLinkContainer(memory.links, linkBase)
       setupDocumentContainer(memory.documents, documentBase)
-      setupTagContainer(memory.tags!!, tagContainer)
+      setupTagContainer(memory.tags, tagContainer)
       setupButtonContainer(memories, deleteButton, editButton)
 
 
@@ -98,13 +102,14 @@ class ReminiscenceHelper(
   fun forget(){
     container.removeAllViews()
   }
-
-
-
-
-
-  fun editMemory(memory:Memory){
-
+  
+  
+  
+  
+  
+  private fun setupDateSection(date: Date, textView: TextView){
+    val dateText = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault()).format(date)
+    textView.text = dateText
   }
 
 
@@ -389,6 +394,7 @@ class ReminiscenceHelper(
 
     }
   }
+  
   
   
   

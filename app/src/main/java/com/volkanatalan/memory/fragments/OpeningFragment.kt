@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import com.volkanatalan.memory.R
@@ -31,6 +32,7 @@ class OpeningFragment : Fragment() {
   
     val mLetterTranslateAnimator = ObjectAnimator.ofFloat(view.m_letter, "translationX", mLetterToX)
     mLetterTranslateAnimator.duration = 500
+    mLetterTranslateAnimator.interpolator = AccelerateDecelerateInterpolator()
   
     val brainAlphaAnimator = ObjectAnimator.ofFloat(view.brain, "alpha", 0.3f)
     mLetterAlphaAnimator.duration = 500
@@ -47,9 +49,9 @@ class OpeningFragment : Fragment() {
     
     val animSet = AnimatorSet()
     animSet.play(mLetterTranslateAnimator).with(brainAlphaAnimator)
+    animSet.play(mLetterTranslateAnimator).with(textAlphaAnimator)
     animSet.play(mLetterAlphaAnimator).before(mLetterTranslateAnimator)
-    animSet.play(mLetterTranslateAnimator).before(textAlphaAnimator)
-    animSet.play(textAlphaAnimator).before(brainScaleXAnimator)
+    animSet.play(mLetterTranslateAnimator).before(brainScaleXAnimator)
     animSet.play(brainScaleXAnimator).with(brainScaleYAnimator)
     animSet.doOnEnd {
       val mainActivity = activity as MainActivity
