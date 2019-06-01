@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/colorPrimaryDark">
+  
+  <ImageView
+    android:id="@+id/brain"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:layout_gravity="center"
+    app:srcCompat="@drawable/brain"
+    android:visibility="visible"/>
+  
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <ImageView
+      android:id="@+id/m_letter"
+      android:layout_width="200dp"
+      android:layout_height="200dp"
+      android:layout_gravity="center"
+      app:srcCompat="@drawable/m"
+      android:alpha="0"/>
+  
+  </FrameLayout>
+  
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <TextView
+      android:id="@+id/text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="80dp"
+      android:paddingBottom="50dp"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="emory"
+      android:textColor="@color/white"
+      android:textSize="60dp"
+      android:alpha="0"/>
+  
+  </FrameLayout>
+</FrameLayout>

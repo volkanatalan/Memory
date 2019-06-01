@@ -21,6 +21,7 @@ import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.classes.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
+import com.volkanatalan.memory.fragments.OpeningFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.abs
 
@@ -40,6 +41,11 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    
+    supportFragmentManager.beginTransaction()
+      .replace(R.id.fragmentContainer, OpeningFragment(), "OpeningFragment")
+      .addToBackStack("OpeningFragment")
+      .commit()
 
     setSupportActionBar(toolbar)
 
@@ -153,40 +159,34 @@ class MainActivity : AppCompatActivity() {
     var firstTouchY = 0
     val density = resources.displayMetrics.density
     
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      scrollView.setOnScrollChangeListener{ v, _, _, _, _->
-        hideKeyboard(v as View)
-      }
-    }
-    else {
-      scrollView.setOnTouchListener { v, event ->
-        hideKeyboard(v as View)
+    
+    scrollView.setOnTouchListener { v, event ->
+      hideKeyboard(true)
+      
+      when(event.action){
+        MotionEvent.ACTION_DOWN -> {
+          firstTouchY = event.y.toInt()
+          //Log.d(TAG, "firstTouchY: $firstTouchY")
+        }
         
-        when(event.action){
-          MotionEvent.ACTION_DOWN -> {
-            firstTouchY = event.y.toInt()
-            //Log.d(TAG, "firstTouchY: $firstTouchY")
-          }
+        MotionEvent.ACTION_MOVE -> {
+          val currentTouchY = event.y.toInt()
+          val distance = abs(currentTouchY - firstTouchY)
+          //Log.d(TAG, "scrollY: $currentTouchY")
           
-          MotionEvent.ACTION_MOVE -> {
-            val currentTouchY = event.y.toInt()
-            val distance = abs(currentTouchY - firstTouchY)
-            //Log.d(TAG, "scrollY: $currentTouchY")
+          if (distance > 30 * density){
+            if (firstTouchY > currentTouchY && !isEditTextHidden && !isEditTextAnimating){
+              hideEditText(true)
+            }
             
-            if (distance > 30 * density){
-              if (firstTouchY > currentTouchY && !isEditTextHidden && !isEditTextAnimating){
-                hideEditText(true)
-              }
-              
-              else if (firstTouchY < currentTouchY && isEditTextHidden && !isEditTextAnimating) {
-                hideEditText(false)
-              }
+            else if (firstTouchY < currentTouchY && isEditTextHidden && !isEditTextAnimating) {
+              hideEditText(false)
             }
           }
         }
-        
-        false
       }
+      
+      false
     }
   }
   
@@ -226,8 +226,15 @@ class MainActivity : AppCompatActivity() {
 
 
 
-  private fun Context.hideKeyboard(view: View) {
-    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+  fun hideKeyboard(hide: Boolean) {
+    if (hide) {
+      val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+      inputMethodManager.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+    }
+    else {
+      val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+      searchEditText.requestFocus()
+      inputMethodManager.showSoftInput(searchEditText, 0)
+    }
   }
 }

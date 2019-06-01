@@ -19,13 +19,13 @@
   <string name="text">Text</string>
   <string name="tags">Tags</string>
   <string name="images">Images</string>
-  
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
   <string name="delete_memory_qm">Delete memory?</string>
   <string name="delete">Delete</string>
   <string name="cancel">Cancel</string>
   <string name="deleting_memory_is_irreversible_do_you_want_to_proceed">Deleting memory is irreversible. Do you want to
     proceed?
   </string>
+  
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

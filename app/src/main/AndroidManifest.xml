@@ -25,7 +25,7 @@
         </provider>
 
         <activity android:name="com.volkanatalan.memory.activities.MainActivity"
-                  android:windowSoftInputMode="adjustPan">
+                  android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
