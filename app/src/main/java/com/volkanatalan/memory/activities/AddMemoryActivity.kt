@@ -37,7 +37,7 @@ class AddMemoryActivity : AppCompatActivity() {
 
   private val TAG = "AddMemoryActivity"
   private var mMemory = Memory()
-  lateinit var mEditMemory: Memory
+  private var mEditMemory: Memory? = null
   private var PICK_IMAGE_MULTIPLE = 100
   private var ADD_DOCUMENTS = 101
   private var isEditing = false
@@ -56,13 +56,13 @@ class AddMemoryActivity : AppCompatActivity() {
     if (editMemoryId > -1) {
       isEditing = true
       mEditMemory = MemoryDatabase(this, null).rememberSomething(editMemoryId)
-      mMemory.id = mEditMemory.id
-      mMemory.title = mEditMemory.title
-      mMemory.text = mEditMemory.text
-      mMemory.tags = mEditMemory.tags
-      mMemory.images.addAll(mEditMemory.images)
-      mMemory.documents.addAll(mEditMemory.documents)
-      mMemory.links = mEditMemory.links
+      mMemory.id = mEditMemory!!.id
+      mMemory.title = mEditMemory!!.title
+      mMemory.text = mEditMemory!!.text
+      mMemory.tags = mEditMemory!!.tags
+      mMemory.images.addAll(mEditMemory!!.images)
+      mMemory.documents.addAll(mEditMemory!!.documents)
+      mMemory.links = mEditMemory!!.links
 
     }
 
@@ -190,8 +190,8 @@ class AddMemoryActivity : AppCompatActivity() {
 
   private fun setupTextSection(){
     if (isEditing) {
-      titleEditText.setText(mEditMemory.title)
-      textEditText.setText(mEditMemory.text)
+      titleEditText.setText(mEditMemory!!.title)
+      textEditText.setText(mEditMemory!!.text)
     }
   }
 
@@ -312,9 +312,9 @@ class AddMemoryActivity : AppCompatActivity() {
         val imageToRemove = mMemory.images[viewPosition]
 
         // If it is in editing mode and the image is in the storage, add image to removing list
-        if (isEditing && mEditMemory.images.contains(imageToRemove)) {
+        if (isEditing && mEditMemory!!.images.contains(imageToRemove)) {
           mImagesToRemove.add(imageToRemove)
-          mEditMemory.images.remove(imageToRemove)
+          mEditMemory!!.images.remove(imageToRemove)
         }
 
         // Delete image from list
@@ -335,7 +335,7 @@ class AddMemoryActivity : AppCompatActivity() {
 
   private fun setupDocumentSection() {
     if (isEditing) {
-      for (document in mEditMemory.documents) {
+      for (document in mEditMemory!!.documents) {
         addDocumentToContainer(document)
       }
     }
@@ -355,7 +355,7 @@ class AddMemoryActivity : AppCompatActivity() {
 
   private fun setupDocumentsContainer(intent: Intent){
     if (isEditing){
-      for (document in mEditMemory.documents){
+      for (document in mEditMemory!!.documents){
         addDocumentToContainer(document)
       }
     }
@@ -403,9 +403,9 @@ class AddMemoryActivity : AppCompatActivity() {
       val viewPosition = (parent.parent as LinearLayout).indexOfChild(parent)
       val docToRemove = mMemory.documents[viewPosition]
 
-      if (isEditing && mEditMemory.documents.contains(docToRemove)){
+      if (isEditing && mEditMemory!!.documents.contains(docToRemove)){
         mDocumentsToRemove.add(docToRemove)
-        mEditMemory.documents.remove(docToRemove)
+        mEditMemory!!.documents.remove(docToRemove)
       }
 
       // Delete document from list
@@ -534,33 +534,39 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
     for (path in sourceList) {
-      val sourceFile = File(path)
-      val sourceFileOnlyName = sourceFile.nameWithoutExtension
-      val sourceFileExtension = sourceFile.extension
-      var destinationFile = File(directory, sourceFile.name)
-
-      // If file exist change its name.
-      var count = 1
-      while (destinationFile.exists()) {
-        count++
-        val fileNameAddition = "($count)"
-        val fileName = "$sourceFileOnlyName$fileNameAddition.$sourceFileExtension" // .../Images/fileName(2).jpg
-        destinationFile = File(directory, fileName)
-      }
-
-      // Copy file to internal storage.
-      if (sourceFile.exists()) {
-        val inChannel: FileChannel = FileInputStream(sourceFile).channel
-        val outChannel: FileChannel = FileOutputStream(destinationFile).channel
-        try {
-          inChannel.transferTo(0, inChannel.size(), outChannel)
-          destinationList.add(destinationFile.path)
-        } finally {
-          inChannel.close()
-          outChannel.close()
+      if (mEditMemory == null || (!mEditMemory!!.images.contains(path) && !mEditMemory!!.documents.contains(path))) {
+        val sourceFile = File(path)
+        val sourceFileOnlyName = sourceFile.nameWithoutExtension
+        val sourceFileExtension = sourceFile.extension
+        var destinationFile = File(directory, sourceFile.name)
+    
+        // If file exist change its name.
+        var count = 1
+        while (destinationFile.exists()) {
+          count++
+          val fileNameAddition = "($count)"
+          val fileName = "$sourceFileOnlyName$fileNameAddition.$sourceFileExtension" // .../Images/fileName(2).jpg
+          destinationFile = File(directory, fileName)
+        }
+    
+        // Copy file to internal storage.
+        if (sourceFile.exists()) {
+          val inChannel: FileChannel = FileInputStream(sourceFile).channel
+          val outChannel: FileChannel = FileOutputStream(destinationFile).channel
+          try {
+            inChannel.transferTo(0, inChannel.size(), outChannel)
+            destinationList.add(destinationFile.path)
+          } finally {
+            inChannel.close()
+            outChannel.close()
+          }
         }
       }
+      else {
+        destinationList.add(path)
+      }
     }
+    
 
     return destinationList
   }

@@ -42,7 +42,7 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:padding="10dp"
+          android:padding="@dimen/page_padding"
           android:orientation="vertical">
 
 
@@ -66,8 +66,8 @@
               android:orientation="horizontal">
 
               <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_dimension"
+                android:layout_height="@dimen/icon_dimension"
                 android:layout_marginEnd="5dp"
                 app:srcCompat="@drawable/icon_text_file"/>
 
@@ -124,8 +124,8 @@
               android:orientation="horizontal">
 
               <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_dimension"
+                android:layout_height="@dimen/icon_dimension"
                 android:layout_marginEnd="5dp"
                 app:srcCompat="@drawable/icon_tag"/>
 
@@ -196,8 +196,8 @@
               android:orientation="horizontal">
 
               <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_dimension"
+                android:layout_height="@dimen/icon_dimension"
                 android:layout_marginEnd="5dp"
                 app:srcCompat="@drawable/icon_image"/>
 
@@ -215,9 +215,9 @@
               android:id="@+id/addImageButton"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="15dp"
-              android:paddingStart="20dp"
-              android:paddingEnd="20dp"
+              android:padding="@dimen/add_button_padding"
+              android:paddingStart="@dimen/add_button_start_end"
+              android:paddingEnd="@dimen/add_button_start_end"
               android:orientation="horizontal"
               android:layout_gravity="center_horizontal"
               android:gravity="center_vertical"
@@ -233,7 +233,7 @@
               <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD IMAGES"
+                android:text="@string/add_images_allcaps"
                 android:textSize="16sp"
                 android:textColor="@color/white"/>
 
@@ -269,8 +269,8 @@
               android:orientation="horizontal">
 
               <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_dimension"
+                android:layout_height="@dimen/icon_dimension"
                 android:layout_marginEnd="5dp"
                 app:srcCompat="@drawable/icon_documents"/>
 
@@ -287,9 +287,9 @@
               android:id="@+id/addDocumentButton"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="15dp"
-              android:paddingStart="20dp"
-              android:paddingEnd="20dp"
+              android:padding="@dimen/add_button_padding"
+              android:paddingStart="@dimen/add_button_start_end"
+              android:paddingEnd="@dimen/add_button_start_end"
               android:gravity="center_vertical"
               android:layout_gravity="center_horizontal"
               android:orientation="horizontal"
@@ -346,8 +346,8 @@
 
               <ImageView
                 android:id="@+id/linkIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icon_dimension"
+                android:layout_height="@dimen/icon_dimension"
                 android:layout_marginEnd="5dp"
                 app:srcCompat="@drawable/icon_link"/>
 
@@ -382,7 +382,7 @@
                   android:hint="@string/link_title"
                   android:textColor="@color/black"
                   android:selectAllOnFocus="true" android:inputType="textCapSentences"/>
-
+  
                 <EditText
                   android:id="@+id/linkAddressEditText"
                   android:layout_width="match_parent"
@@ -392,7 +392,7 @@
                   android:singleLine="true"
                   android:hint="@string/address"
                   android:textColor="@color/black"
-                  android:selectAllOnFocus="false" android:inputType="textWebEditText"/>
+                  android:selectAllOnFocus="false"/>
 
               </LinearLayout>
 

@@ -12,4 +12,12 @@
   <dimen name="subsection_padding">5dp</dimen>
   <dimen name="memory_top_bottom_margin">10dp</dimen>
   <dimen name="memory_image_bottom_margin">10dp</dimen>
+  <dimen name="memory_padding">10dp</dimen>
+  <dimen name="memory_button_dimension">40dp</dimen>
+  <dimen name="icon_dimension">30dp</dimen>
+  <dimen name="add_button_padding">15dp</dimen>
+  <dimen name="add_button_start_end">20dp</dimen>
+  <dimen name="memory_date_text_size">14sp</dimen>
+  <dimen name="memory_title_text_size">20sp</dimen>
+  <dimen name="memory_section_icon_dimension">25dp</dimen>
 </resources>

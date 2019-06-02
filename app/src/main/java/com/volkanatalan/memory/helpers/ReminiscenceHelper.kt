@@ -269,17 +269,39 @@ class ReminiscenceHelper(
           //Log.d(TAG, "document: ${documents[documentIndex]}")
           
           // Share file to another app
-          // create new Intent
           val intent = Intent(Intent.ACTION_VIEW)
 
-          // set flag to give temporary permission to external app to use your FileProvider
+          // Set flag to give temporary permission to external app to use FileProvider
           intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-
-          // generate URI, I defined authority as the application ID in the Manifest, the last param is file I want to open
           val uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID, documentFile)
+  
+          val dataType = when(documentFile.extension){
+            "jpg" -> "image/jpg"
+            "jpeg" -> "image/jpeg"
+            "png" -> "image/png"
+            "gif" -> "image/gif"
+            "pdf" -> "application/pdf"
+            "apk" -> "application/vnd.android.package-archive"
+            "txt" -> "text/plain"
+            "cfg" -> "text/plain"
+            "rc" -> "text/plain"
+            "csv" -> "text/plain"
+            "xml" -> "text/xml"
+            "html" -> "text/html"
+            "htm" -> "text/html"
+            "mpeg" -> "audio/mpeg"
+            "mp3" -> "audio/mp3"
+            "aac" -> "audio/aac"
+            "wav" -> "audio/wav"
+            "ogg" -> "audio/ogg"
+            "midi" -> "audio/midi"
+            "wma" -> "audio/wma"
+            "mp4" -> "video/mp4"
+            "wmv" -> "video/wmv"
+            else -> "*/*"
+          }
 
-          // I am opening a PDF file so I give it a valid MIME type
-          intent.setDataAndType(uri, "*/*")
+          intent.setDataAndType(uri, dataType)
 
           // validate that the device can open your File!
           val pm = activity.packageManager

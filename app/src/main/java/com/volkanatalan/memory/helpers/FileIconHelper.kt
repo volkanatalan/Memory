@@ -34,6 +34,7 @@ class FileIconHelper {
       "indd" -> R.drawable.file_indd
       "iso" -> R.drawable.file_iso
       "jpg" -> R.drawable.file_jpg
+      "jpeg" -> R.drawable.file_jpeg
       "js" -> R.drawable.file_js
       "midi" -> R.drawable.file_midi
       "mov" -> R.drawable.file_mov

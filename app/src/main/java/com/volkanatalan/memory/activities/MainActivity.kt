@@ -14,7 +14,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import androidx.core.animation.doOnEnd
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.classes.Memory
@@ -44,9 +49,16 @@ class MainActivity : AppCompatActivity() {
       .replace(R.id.fragmentContainer, OpeningFragment(), "OpeningFragment")
       .addToBackStack("OpeningFragment")
       .commit()
+  
+    MobileAds.initialize(this, "ca-app-pub-5259025756226193/5648731247")
+    val mAdView = AdView(this)
+    mAdView.adSize = AdSize.BANNER
+    mAdView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+    adBannerContainer.addView(mAdView)
+    val adRequest = AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build()
+    mAdView.loadAd(adRequest)
 
     setSupportActionBar(toolbar)
-
     setupSearchEditText()
     setupSearchResultsContainer()
   }
@@ -122,6 +134,11 @@ class MainActivity : AppCompatActivity() {
 
 
   private fun setupSearchEditText() {
+    cleanSearch.setOnClickListener {
+      searchEditText.setText("")
+    }
+    
+    
     searchEditText.addTextChangedListener(object:TextWatcher{
       override fun afterTextChanged(s: Editable?) {
         val searchText = s.toString()
@@ -165,7 +182,7 @@ class MainActivity : AppCompatActivity() {
     val density = resources.displayMetrics.density
     
     
-    scrollView.setOnTouchListener { v, event ->
+    scrollView.setOnTouchListener { _, event ->
       hideKeyboard(true)
       
       when(event.action){
@@ -218,10 +235,10 @@ class MainActivity : AppCompatActivity() {
     
     valueAnimator.addUpdateListener {
       val value = it.animatedValue as Float
-      val params = searchEditText.layoutParams
+      val params = searchContainer.layoutParams
       params.height = value.toInt()
-      searchEditText.layoutParams = params
-      Log.d(TAG, "searchEditTextHeight: ${value.toInt()}")
+      searchContainer.layoutParams = params
+      //Log.d(TAG, "searchEditTextHeight: ${value.toInt()}")
     }
     
     valueAnimator.start()

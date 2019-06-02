@@ -24,4 +24,5 @@
   <string name="cancel">Cancel</string>
   <string name="deleting_memory_is_irreversible_do_you_want_to_proceed">Deleting memory is irreversible. Do you want to
     proceed?</string>
+  <string name="add_images_allcaps">ADD IMAGES</string>
 </resources>

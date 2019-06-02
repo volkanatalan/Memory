@@ -6,18 +6,18 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:padding="10dp"
+  android:padding="@dimen/memory_padding"
   android:background="@drawable/bg_section">
   
   <TextView
     android:id="@+id/titleTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
     android:textStyle="bold"
-    android:textSize="20sp"
+    android:textSize="@dimen/memory_title_text_size"
     android:textColor="@color/black"
     android:text="Memory Title"
+    android:textIsSelectable="true"
   />
   
   <TextView
@@ -25,7 +25,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:textSize="14sp"
+    android:textSize="@dimen/memory_date_text_size"
     android:textColor="@color/black"
     android:text="01.06.2019 20:19"
   />
@@ -46,7 +46,8 @@
     android:visibility="gone"
     android:textColor="@color/black"
     android:text="@string/dummy_text"
-    android:textSize="16sp"/>
+    android:textSize="16sp"
+    android:textIsSelectable="true"/>
 
 
 
@@ -72,8 +73,8 @@
 
       <ImageView
         android:id="@+id/linkIcon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/memory_section_icon_dimension"
+        android:layout_height="@dimen/memory_section_icon_dimension"
         app:srcCompat="@drawable/icon_link"/>
 
       <TextView
@@ -93,8 +94,8 @@
       android:id="@+id/linkContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="10dp"
-      android:layout_marginEnd="10dp"
+      android:layout_marginStart="5dp"
+      android:layout_marginEnd="5dp"
       android:orientation="vertical"/>
 
   </LinearLayout>
@@ -123,8 +124,8 @@
 
       <ImageView
         android:id="@+id/documentIcon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/memory_section_icon_dimension"
+        android:layout_height="@dimen/memory_section_icon_dimension"
         app:srcCompat="@drawable/icon_documents"/>
 
       <TextView
@@ -158,7 +159,7 @@
     android:id="@+id/tagContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp" />
+    android:layout_marginBottom="10dp" />
 
 
 
@@ -169,20 +170,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="right"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:ignore="RtlHardcoded">
 
     <ImageView
       android:id="@+id/editButtonImageView"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_width="@dimen/memory_button_dimension"
+      android:layout_height="@dimen/memory_button_dimension"
       android:layout_marginEnd="10dp"
       android:background="@drawable/bg_edit_memory_button"
       app:srcCompat="@drawable/button_edit_memory"/>
 
     <ImageView
       android:id="@+id/deleteButtonImageView"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_width="@dimen/memory_button_dimension"
+      android:layout_height="@dimen/memory_button_dimension"
       android:background="@drawable/bg_delete_memory_button"
       app:srcCompat="@drawable/button_delete_memory"/>
 
