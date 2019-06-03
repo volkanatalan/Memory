@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -140,6 +139,16 @@ class ReminiscenceHelper(
 
           // Setup image view
           Glide.with(activity).load(imgFile).into(imageView)
+          
+          
+          // Set on click listener to image to open it another app
+          root.setOnClickListener {
+            val parent = it.parent as LinearLayout
+            val index = parent.indexOfChild(it)
+            val imagePath = images[index]
+  
+            shareFile(imagePath)
+          }
 
 
           // Add image to image container
@@ -265,49 +274,8 @@ class ReminiscenceHelper(
           val parentOfDocument = it.parent as GridLayout
           val documentIndex = parentOfDocument.indexOfChild(it)
           val documentPath = documents[documentIndex]
-          val documentFile = File(documentPath)
-          //Log.d(TAG, "document: ${documents[documentIndex]}")
           
-          // Share file to another app
-          val intent = Intent(Intent.ACTION_VIEW)
-
-          // Set flag to give temporary permission to external app to use FileProvider
-          intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-          val uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID, documentFile)
-  
-          val dataType = when(documentFile.extension){
-            "jpg" -> "image/jpg"
-            "jpeg" -> "image/jpeg"
-            "png" -> "image/png"
-            "gif" -> "image/gif"
-            "pdf" -> "application/pdf"
-            "apk" -> "application/vnd.android.package-archive"
-            "txt" -> "text/plain"
-            "cfg" -> "text/plain"
-            "rc" -> "text/plain"
-            "csv" -> "text/plain"
-            "xml" -> "text/xml"
-            "html" -> "text/html"
-            "htm" -> "text/html"
-            "mpeg" -> "audio/mpeg"
-            "mp3" -> "audio/mp3"
-            "aac" -> "audio/aac"
-            "wav" -> "audio/wav"
-            "ogg" -> "audio/ogg"
-            "midi" -> "audio/midi"
-            "wma" -> "audio/wma"
-            "mp4" -> "video/mp4"
-            "wmv" -> "video/wmv"
-            else -> "*/*"
-          }
-
-          intent.setDataAndType(uri, dataType)
-
-          // validate that the device can open your File!
-          val pm = activity.packageManager
-          if (intent.resolveActivity(pm) != null) {
-            activity.startActivity(intent)
-          }
+          shareFile(documentPath)
         }
 
         documentContainer.addView(root)
@@ -424,6 +392,32 @@ class ReminiscenceHelper(
   private fun deleteFilesFromStorage(path: String){
     val file = File(path)
     if (file.exists()) file.delete()
+  }
+  
+  
+  
+  
+  
+  private fun shareFile(path: String){
+    val file = File(path)
+    //Log.d(TAG, "document: ${documents[documentIndex]}")
+  
+    // Share file to another app
+    val intent = Intent(Intent.ACTION_VIEW)
+  
+    // Set flag to give temporary permission to external app to use FileProvider
+    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    val uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID, file)
+  
+    val dataType = DocumentExtensionHelper().getFileType(file.extension)
+  
+    intent.setDataAndType(uri, dataType)
+  
+    // validate that the device can open your File!
+    val packageManager = activity.packageManager
+    if (intent.resolveActivity(packageManager) != null) {
+      activity.startActivity(intent)
+    }
   }
   
   

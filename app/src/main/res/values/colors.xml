@@ -15,8 +15,8 @@
   <color name="white_transparent">#80FFFFFF</color>
   <color name="link">#4688F2</color>
   <color name="link_click">#9B2424</color>
-  <color name="delete_red">#E20D0D</color>
-  <color name="delete_red_click">#790C0C</color>
-  <color name="edit_yellow">#DDA90D</color>
-  <color name="edit_yellow_click">#88680D</color>
+  <color name="delete_red">#3A0505</color>
+  <color name="delete_red_click">#E20D0D</color>
+  <color name="edit_yellow">#382905</color>
+  <color name="edit_yellow_click">#DDA90D</color>
 </resources>
