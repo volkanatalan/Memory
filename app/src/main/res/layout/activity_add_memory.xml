@@ -31,6 +31,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        app:title="@string/add_memory_camel"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -94,7 +95,8 @@
             <EditText
               android:id="@+id/textEditText"
               android:layout_width="match_parent"
-              android:layout_height="150dp"
+              android:layout_height="wrap_content"
+              android:minHeight="150dp"
               android:singleLine="false"
               android:inputType="textMultiLine|textCapSentences"
               android:gravity="top"

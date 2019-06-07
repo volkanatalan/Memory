@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import com.volkanatalan.memory.classes.Memory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -113,8 +112,8 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
 
 
-  fun rememberMemories(text:String): MutableList<Memory> {
-    var subText = text
+  fun rememberMemories(searchText: String): MutableList<Memory> {
+    var subText = searchText
     val subTextList = mutableListOf<String>()
     
     while (subText.isNotEmpty()){
@@ -197,6 +196,35 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
     return memory
   }
+  
+  
+  
+  
+  
+  fun rememberRandomMemory(): Memory?{
+    var memory: Memory? = null
+    val db = this.readableDatabase
+    val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES ORDER BY RANDOM() LIMIT 1;", null)
+    if (c.count > 0){
+      c.moveToFirst()
+      val id = c.getInt(c.getColumnIndex(COLUMN_ID))
+      val title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+      val date = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault())
+        .parse(c.getString(c.getColumnIndex(COLUMN_DATE)))
+      val text = c.getString(c.getColumnIndex(COLUMN_TEXT))
+      val tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
+      val links = Memory().linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
+      val images = stringToList(c.getString(c.getColumnIndex(COLUMN_IMAGES)))
+      val documents = stringToList(c.getString(c.getColumnIndex(COLUMN_DOCUMENT)))
+  
+      memory = Memory(id, date, title, text, tags, links, images, documents)
+    }
+    
+    c.close()
+    db.close()
+    
+    return memory
+  }
 
 
 
@@ -237,5 +265,54 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     }
 
     return list
+  }
+  
+  
+  
+  
+  
+  fun getSearchables():MutableList<Pair<String, String>>{
+    val searchables = mutableListOf<Pair<String, String>>()
+    val db = this.readableDatabase
+    val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES;", null)
+    while (c.moveToNext()){
+      
+      // Add title to searchables list
+      val title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+      searchables.add(Pair("Title", title))
+  
+      // Add tags to searchables list
+      val columnTags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
+      for (tag in columnTags){
+        if (!searchables.contains(Pair("Tag", tag))){
+          searchables.add(Pair("Tag", tag))
+        }
+      }
+    }
+  
+    c.close()
+    db.close()
+    
+    return searchables.sortedWith(compareBy({it.second}, {it.first})) as MutableList<Pair<String, String>>
+  }
+  
+  
+  
+  
+  
+  fun getTitles(): MutableList<String>{
+    val titles = mutableListOf<String>()
+    val db = this.readableDatabase
+    val c = db.rawQuery("SELECT $COLUMN_TITLE FROM $TABLE_MEMORIES;", null)
+    while (c.moveToNext()){
+      titles.add(c.getString(c.getColumnIndex(COLUMN_TITLE)))
+    }
+    
+    c.close()
+    db.close()
+  
+    titles.sort()
+    
+    return titles
   }
 }

@@ -294,7 +294,7 @@ class ReminiscenceHelper(
     val layoutParams = LinearLayout.LayoutParams(
       LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
     )
-    layoutParams.setMargins(0, 0, 5, 0)
+    layoutParams.setMargins(0, 0, 5, 5)
 
 
     // Firstly add "Tags:" label

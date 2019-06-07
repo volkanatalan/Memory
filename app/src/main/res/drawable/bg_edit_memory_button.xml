@@ -9,7 +9,7 @@
   
   <item android:state_pressed="false">
     <shape>
-      <solid android:color="@color/edit_yellow"/>
+      <solid android:color="@color/memory_button"/>
       <corners android:radius="5dp"/>
     </shape>
   </item>

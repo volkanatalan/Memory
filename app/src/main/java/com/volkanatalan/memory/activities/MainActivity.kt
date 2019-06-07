@@ -3,7 +3,6 @@ package com.volkanatalan.memory.activities
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,17 +13,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
-import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.volkanatalan.memory.R
-import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.classes.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.fragments.OpeningFragment
+import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.abs
 
@@ -35,8 +32,12 @@ class MainActivity : AppCompatActivity() {
   private var mMemories = mutableListOf<Memory>()
   private lateinit var reminiscenceHelper: ReminiscenceHelper
   private val EDIT_MEMORY = 102
+  private val CHOOSE_SEARCH_ITEM = 103
   private var isEditTextAnimating = false
   private var isEditTextHidden = false
+  private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+  private lateinit var mInterstitialAd: InterstitialAd
+  private var isRememberedRandom = false
   
   
   
@@ -44,23 +45,14 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    
-    supportFragmentManager.beginTransaction()
-      .replace(R.id.fragmentContainer, OpeningFragment(), "OpeningFragment")
-      .addToBackStack("OpeningFragment")
-      .commit()
   
-    MobileAds.initialize(this, "ca-app-pub-5259025756226193/5648731247")
-    val mAdView = AdView(this)
-    mAdView.adSize = AdSize.BANNER
-    mAdView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
-    adBannerContainer.addView(mAdView)
-    val adRequest = AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build()
-    mAdView.loadAd(adRequest)
-
+    
+    showIntro()
     setSupportActionBar(toolbar)
     setupSearchEditText()
     setupSearchResultsContainer()
+    setupAds()
+    setupAnalytics()
   }
 
 
@@ -75,11 +67,14 @@ class MainActivity : AppCompatActivity() {
       if (requestCode == EDIT_MEMORY) {
         val memoryId = intent.getIntExtra("updateMemory", -1)
         if (memoryId > -1) {
-          val database = MemoryDatabase(this@MainActivity, null)
-          mMemories = database.rememberMemories(searchEditText.text.toString())
-          database.close()
+          updatemMemories(memoryId)
           reminiscenceHelper.remember(mMemories)
         }
+      }
+      
+      else if (requestCode == CHOOSE_SEARCH_ITEM){
+        val searchItem = intent.getStringExtra("searchItem")
+        searchEditText.setText(searchItem)
       }
     }
   }
@@ -134,22 +129,55 @@ class MainActivity : AppCompatActivity() {
 
 
   private fun setupSearchEditText() {
+    // Show saved tags and titles
+    search_image_view.setOnClickListener {
+      val intent = Intent(this, SearchablesActivity::class.java)
+      startActivityForResult(intent, CHOOSE_SEARCH_ITEM)
+    }
+    
+    
+    // Clear edit text when clicked on x button
     cleanSearch.setOnClickListener {
       searchEditText.setText("")
     }
     
-    
+    // Set on text changed listener to edit text
     searchEditText.addTextChangedListener(object:TextWatcher{
       override fun afterTextChanged(s: Editable?) {
-        val searchText = s.toString()
+        var searchText = s.toString()
 
         if (searchText.length > 1) {
+          
+          while (searchText.contains("'")){
+            val index = searchText.indexOf("'")
+            searchText = searchText.substring(0, index) + " " + searchText.substring(index + 1, searchText.length)
+          }
+          
           val database = MemoryDatabase(this@MainActivity, null)
           mMemories = database.rememberMemories(searchText)
           database.close()
           reminiscenceHelper.remember(mMemories)
+          isRememberedRandom = false
         }
-        else reminiscenceHelper.forget()
+        
+        else if (!isRememberedRandom){
+          // Clear memories
+          reminiscenceHelper.forget()
+          
+          // Remember random memory
+          rememberRandom()
+        }
+  
+  
+  
+        // Show ad
+        if (mInterstitialAd.isLoaded) {
+          mInterstitialAd.show()
+        } else {
+          Log.d(TAG, "The interstitial wasn't loaded yet.")
+        }
+        
+        
       }
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -167,8 +195,6 @@ class MainActivity : AppCompatActivity() {
 
   private fun setupSearchResultsContainer() {
     reminiscenceHelper = ReminiscenceHelper(this, searchResultsContainer, supportFragmentManager)
-
-
     reminiscenceHelper.onTagClickListener = object : ReminiscenceHelper.OnTagClickListener {
       override fun onClick(tag: String) {
         val currentSearch = searchEditText.text.toString()
@@ -177,10 +203,13 @@ class MainActivity : AppCompatActivity() {
     }
     
     
+    // Remember random memory
+    rememberRandom()
+    
+    
     // Hide keyboard and search edit text
     var firstTouchY = 0
     val density = resources.displayMetrics.density
-    
     
     scrollView.setOnTouchListener { _, event ->
       hideKeyboard(true)
@@ -258,5 +287,92 @@ class MainActivity : AppCompatActivity() {
       searchEditText.requestFocus()
       inputMethodManager.showSoftInput(searchEditText, 0)
     }
+  }
+  
+  
+  
+  
+  
+  private fun showIntro(){
+    supportFragmentManager.beginTransaction()
+      .replace(R.id.fragmentContainer, OpeningFragment(), "OpeningFragment")
+      .addToBackStack("OpeningFragment")
+      .commit()
+  }
+  
+  
+  
+  
+  
+  private fun rememberRandom(){
+    val database = MemoryDatabase(this, null)
+    val randomMemory = database.rememberRandomMemory()
+    database.close()
+    if (randomMemory != null) {
+      mMemories.clear()
+      mMemories.add(randomMemory)
+      reminiscenceHelper.remember(mMemories)
+      isRememberedRandom = true
+    }
+  }
+  
+  
+  
+  
+  
+  private fun updatemMemories(id: Int){
+    
+    // Get the index of the memory to update
+    var index = -1
+    for (i in 0 until mMemories.size){
+      if (mMemories[i].id == id) index = i
+      break
+    }
+    
+    // if there is a memory with the same id, update it
+    if (index > -1){
+      val updatedMemory = MemoryDatabase(this, null).rememberSomething(id)
+      mMemories[index] = updatedMemory
+    }
+  }
+  
+  
+  
+  
+  
+  private fun setupAds(){
+    
+    MobileAds.initialize(this, resources.getString(R.string.ad_app_id))
+    
+    // Banner ad
+    val mAdView = AdView(this)
+    mAdView.adSize = AdSize.BANNER
+    mAdView.adUnitId = resources.getString(R.string.banner_ad)
+    adBannerContainer.addView(mAdView)
+    val adRequest = AdRequest.Builder().build()
+    mAdView.loadAd(adRequest)
+  
+  
+    // Interstitial ad
+    mInterstitialAd = InterstitialAd(this)
+    mInterstitialAd.adUnitId = resources.getString(R.string.interstitial_ad)
+    mInterstitialAd.loadAd(AdRequest.Builder().build())
+  
+    mInterstitialAd.adListener = object: AdListener() {
+      override fun onAdClosed() {
+        // Code to be executed when the interstitial ad is closed.
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+      }
+    }
+  }
+  
+  
+  
+  
+  
+  private fun setupAnalytics(){
+    mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    val bundle = Bundle()
+    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle)
   }
 }

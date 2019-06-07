@@ -2,6 +2,7 @@
   <string name="app_name">Memory</string>
   <string name="search">Search</string>
   <string name="add_memory">Add memory</string>
+  <string name="add_memory_camel">Add Memory</string>
   <string name="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet sagittis neque a
     congue. Cras mauris leo, pulvinar non nibh at, feugiat bibendum arcu. Interdum et malesuada fames ac ante ipsum
     primis in faucibus. Cras vel dolor dolor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi et orci
@@ -23,6 +24,8 @@
   <string name="delete">Delete</string>
   <string name="cancel">Cancel</string>
   <string name="deleting_memory_is_irreversible_do_you_want_to_proceed">Deleting memory is irreversible. Do you want to
-    proceed?</string>
+    proceed?
+  </string>
   <string name="add_images_allcaps">ADD IMAGES</string>
+  <string name="memories">Memories</string>
 </resources>

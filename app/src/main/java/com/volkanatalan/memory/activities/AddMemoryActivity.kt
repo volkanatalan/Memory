@@ -1,34 +1,44 @@
 package com.volkanatalan.memory.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.Intent.*
+import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.view.*
-import android.widget.*
-import kotlinx.android.synthetic.main.activity_add_memory.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.volkanatalan.memory.*
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.volkanatalan.memory.R
 import com.volkanatalan.memory.classes.FilePath
-import com.volkanatalan.memory.helpers.FileIconHelper
 import com.volkanatalan.memory.classes.Link
 import com.volkanatalan.memory.classes.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
-import kotlinx.android.synthetic.main.activity_add_memory.documentContainer
-import kotlinx.android.synthetic.main.activity_add_memory.imageContainer
-import kotlinx.android.synthetic.main.activity_add_memory.linkContainer
-import kotlinx.android.synthetic.main.activity_add_memory.tagContainer
+import com.volkanatalan.memory.helpers.FileIconHelper
+import kotlinx.android.synthetic.main.activity_add_memory.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.deleteImageView
 import kotlinx.android.synthetic.main.list_item_link.view.*
 import kotlinx.android.synthetic.main.list_item_tag_container.view.*
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.nio.channels.FileChannel
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -43,6 +53,7 @@ class AddMemoryActivity : AppCompatActivity() {
   private var isEditing = false
   private val mImagesToRemove = mutableListOf<String>()
   private val mDocumentsToRemove = mutableListOf<String>()
+  private lateinit var mInterstitialAd: InterstitialAd
 
 
 
@@ -51,7 +62,19 @@ class AddMemoryActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_add_memory)
     setSupportActionBar(toolbar)
-
+  
+    mInterstitialAd = InterstitialAd(this)
+    mInterstitialAd.adUnitId = resources.getString(R.string.interstitial_ad)
+    mInterstitialAd.loadAd(AdRequest.Builder().build())
+  
+    mInterstitialAd.adListener = object: AdListener() {
+      override fun onAdClosed() {
+        // Code to be executed when the interstitial ad is closed.
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+      }
+    }
+    
+    
     val editMemoryId = intent.getIntExtra("editMemory", -1)
     if (editMemoryId > -1) {
       isEditing = true
@@ -63,7 +86,6 @@ class AddMemoryActivity : AppCompatActivity() {
       mMemory.images.addAll(mEditMemory!!.images)
       mMemory.documents.addAll(mEditMemory!!.documents)
       mMemory.links = mEditMemory!!.links
-
     }
 
     setupTextSection()
@@ -99,6 +121,17 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
   private fun onSelectedDone(){
+  
+    // Show ad
+    if (mInterstitialAd.isLoaded) {
+      mInterstitialAd.show()
+    } else {
+      Log.d(TAG, "The interstitial wasn't loaded yet.")
+    }
+    
+    
+    
+    // Save memory
     mMemory.title = titleEditText.text.toString()
     mMemory.text = textEditText.text.toString()
 
@@ -266,12 +299,33 @@ class AddMemoryActivity : AppCompatActivity() {
 
 
     addImageButton.setOnClickListener {
-      val intent = Intent(ACTION_OPEN_DOCUMENT).apply {
-        putExtra(EXTRA_ALLOW_MULTIPLE, true)
-        addCategory(CATEGORY_OPENABLE)
-        type = "image/*"
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        != PackageManager.PERMISSION_GRANTED) {
+    
+        // Permission is not granted
+        // Should we show an explanation?
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+          // Show an explanation to the user *asynchronously* -- don't block
+          // this thread waiting for the user's response! After the user
+          // sees the explanation, try again to request the permission.
+        } else {
+          // No explanation needed, we can request the permission.
+          ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            PICK_IMAGE_MULTIPLE)
+      
+          // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+          // app-defined int constant. The callback method gets the
+          // result of the request.
+        }
+      } else {
+        // Permission has already been granted
+        val intent = Intent(ACTION_OPEN_DOCUMENT).apply {
+          putExtra(EXTRA_ALLOW_MULTIPLE, true)
+          addCategory(CATEGORY_OPENABLE)
+          type = "image/*"
+        }
+        startActivityForResult(createChooser(intent, "Select an app to add images"), PICK_IMAGE_MULTIPLE)
       }
-      startActivityForResult(createChooser(intent, "Select an app to add images"), PICK_IMAGE_MULTIPLE)
     }
   }
 
