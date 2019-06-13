@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="pick_image_multiple">100</integer>
+  <integer name="add_documents">101</integer>
+  <integer name="edit_memory">102</integer>
+  <integer name="choose_search_item">103</integer>
+</resources>

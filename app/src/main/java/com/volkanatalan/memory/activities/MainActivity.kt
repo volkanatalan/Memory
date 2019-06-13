@@ -18,7 +18,7 @@ import androidx.core.animation.doOnEnd
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.volkanatalan.memory.R
-import com.volkanatalan.memory.classes.Memory
+import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.fragments.OpeningFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
@@ -31,11 +31,11 @@ class MainActivity : AppCompatActivity() {
   private var TAG = "MainActivity"
   private var mMemories = mutableListOf<Memory>()
   private lateinit var reminiscenceHelper: ReminiscenceHelper
-  private val EDIT_MEMORY = 102
-  private val CHOOSE_SEARCH_ITEM = 103
+  private var EDIT_MEMORY = 0
+  private var CHOOSE_SEARCH_ITEM = 0
   private var isEditTextAnimating = false
   private var isEditTextHidden = false
-  private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+  private lateinit var mFireBaseAnalytics: FirebaseAnalytics
   private lateinit var mInterstitialAd: InterstitialAd
   private var isRememberedRandom = false
   
@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+  
+    EDIT_MEMORY = resources.getInteger(R.integer.edit_memory)
+    CHOOSE_SEARCH_ITEM = resources.getInteger(R.integer.choose_search_item)
   
     
     showIntro()
@@ -95,6 +98,12 @@ class MainActivity : AppCompatActivity() {
   override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId) {
     R.id.action_mainactivity_add -> {
       val intent = Intent(this, AddMemoryActivity::class.java)
+      startActivity(intent)
+      true
+    }
+    
+    R.id.action_mainactivity_about -> {
+      val intent = Intent(this, AboutActivity::class.java)
       startActivity(intent)
       true
     }
@@ -331,7 +340,7 @@ class MainActivity : AppCompatActivity() {
     
     // if there is a memory with the same id, update it
     if (index > -1){
-      val updatedMemory = MemoryDatabase(this, null).rememberSomething(id)
+      val updatedMemory = MemoryDatabase(this, null).remember(id)
       mMemories[index] = updatedMemory
     }
   }
@@ -371,8 +380,8 @@ class MainActivity : AppCompatActivity() {
   
   
   private fun setupAnalytics(){
-    mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    mFireBaseAnalytics = FirebaseAnalytics.getInstance(this)
     val bundle = Bundle()
-    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle)
+    mFireBaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle)
   }
 }

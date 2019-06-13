@@ -1,3 +1,3 @@
-package com.volkanatalan.memory.classes
+package com.volkanatalan.memory.models
 
 class Link(var address: String, var title: String?)

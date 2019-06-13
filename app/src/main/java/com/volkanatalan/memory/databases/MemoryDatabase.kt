@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
-import com.volkanatalan.memory.classes.Memory
+import com.volkanatalan.memory.models.Memory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -176,7 +176,7 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
 
 
-  fun rememberSomething(id: Int): Memory{
+  fun remember(id: Int): Memory{
     val db = this.readableDatabase
     val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
     c.moveToFirst()

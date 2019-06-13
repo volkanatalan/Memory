@@ -28,4 +28,8 @@
   </string>
   <string name="add_images_allcaps">ADD IMAGES</string>
   <string name="memories">Memories</string>
+  <string name="about">About</string>
+  <string name="credits">Credits</string>
+  <string name="developer_information">Developer Information</string>
+  <string name="copied">Copied!</string>
 </resources>

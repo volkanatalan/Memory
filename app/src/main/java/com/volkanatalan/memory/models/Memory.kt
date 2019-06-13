@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.classes
+package com.volkanatalan.memory.models
 
 import java.util.*
 

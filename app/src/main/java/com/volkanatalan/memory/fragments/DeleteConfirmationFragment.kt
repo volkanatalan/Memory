@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.volkanatalan.memory.R
-import com.volkanatalan.memory.classes.Memory
-import com.volkanatalan.memory.databases.MemoryDatabase
+import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.fragment_delete_confirmation.view.*
 
 /**

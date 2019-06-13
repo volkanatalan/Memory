@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.classes
+package com.volkanatalan.memory.helpers
 
 import android.provider.MediaStore
 import android.provider.DocumentsContract
@@ -10,7 +10,7 @@ import android.os.Environment.getExternalStorageDirectory
 import android.os.Build
 
 
-class FilePath(){
+class FilePathHelper{
   /**
    * Method for return file path of Gallery image/ Document / Video / Audio
    *

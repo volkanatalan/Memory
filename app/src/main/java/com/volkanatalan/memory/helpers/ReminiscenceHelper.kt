@@ -18,8 +18,8 @@ import com.volkanatalan.memory.BuildConfig
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.AddMemoryActivity
 import com.volkanatalan.memory.activities.MainActivity
-import com.volkanatalan.memory.classes.Link
-import com.volkanatalan.memory.classes.Memory
+import com.volkanatalan.memory.models.Link
+import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.fragments.DeleteConfirmationFragment
 import kotlinx.android.synthetic.main.activity_main.*

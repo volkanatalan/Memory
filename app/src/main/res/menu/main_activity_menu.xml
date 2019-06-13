@@ -8,5 +8,10 @@
       android:title="@string/add_memory"
       android:icon="@drawable/add"
       app:showAsAction="ifRoom"/>
+    
+    <item
+      android:id="@+id/action_mainactivity_about"
+      android:title="@string/about"
+      app:showAsAction="never"/>
 
 </menu>

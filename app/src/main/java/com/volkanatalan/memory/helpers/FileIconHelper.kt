@@ -7,9 +7,6 @@ class FileIconHelper {
 
   fun getResource(file: File): Int {
 
-    // Icons made by Dimitry Miroliubov from www.flaticon.com
-    // https://www.flaticon.com/packs/files-8
-
     return when (file.extension) {
       "3ds" -> R.drawable.file_3ds
       "3gp" -> R.drawable.file_3gp
