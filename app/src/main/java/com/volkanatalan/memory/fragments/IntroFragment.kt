@@ -70,7 +70,7 @@ class IntroFragment : Fragment() {
     animSet.doOnEnd {
       val mainActivity = activity as MainActivity
       mainActivity.onBackPressed()
-      mainActivity.hideKeyboard(false)
+      mainActivity.mSearchView.hideKeyboard(false)
     }
     animSet.start()
     

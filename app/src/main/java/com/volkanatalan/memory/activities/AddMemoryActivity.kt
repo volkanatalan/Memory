@@ -18,19 +18,19 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.FilePathHelper
-import com.volkanatalan.memory.interfaces.AddMemoryInterface
-import com.volkanatalan.memory.views.AddMemoryView
+import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
+import com.volkanatalan.memory.views.AddMemoryViewView
 import kotlinx.android.synthetic.main.activity_add_memory.*
 
 
-class AddMemoryActivity : AppCompatActivity(), AddMemoryInterface.MemoryAddListener {
+class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
 
 
   private val TAG = "AddMemoryActivity"
   private var PICK_IMAGE_MULTIPLE = 0
   private var ADD_DOCUMENTS = 0
   private lateinit var mInterstitialAd: InterstitialAd
-  private lateinit var mAddMemoryView: AddMemoryView
+  private lateinit var mAddMemoryView: AddMemoryViewView
 
 
 
@@ -38,17 +38,17 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryInterface.MemoryAddListe
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
   
+    PICK_IMAGE_MULTIPLE = resources.getInteger(R.integer.pick_image_multiple)
+    ADD_DOCUMENTS = resources.getInteger(R.integer.add_documents)
+  
     val editMemoryId = intent.getIntExtra("editMemory", -1)
     
-    mAddMemoryView = AddMemoryView(layoutInflater, this, editMemoryId)
+    mAddMemoryView = AddMemoryViewView(layoutInflater, this, editMemoryId)
     setContentView(mAddMemoryView.getRootView())
     
     setSupportActionBar(toolbar)
   
     setupAds()
-  
-    PICK_IMAGE_MULTIPLE = resources.getInteger(R.integer.pick_image_multiple)
-    ADD_DOCUMENTS = resources.getInteger(R.integer.add_documents)
   }
   
   

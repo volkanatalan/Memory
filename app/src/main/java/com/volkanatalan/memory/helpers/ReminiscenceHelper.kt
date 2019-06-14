@@ -22,6 +22,7 @@ import com.volkanatalan.memory.models.Link
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.fragments.DeleteConfirmationFragment
+import com.volkanatalan.memory.interfaces.SearchViewInterface
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_document.view.*
 import kotlinx.android.synthetic.main.list_item_link.view.*
@@ -36,31 +37,32 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 
-class ReminiscenceHelper(
-  private val activity: Activity,
-  private val container: LinearLayout,
-  private val supportFragmentManager: FragmentManager) {
+class ReminiscenceHelper( context: Context,
+                          container: LinearLayout,
+                          listener:SearchViewInterface.Listener ) {
   
   private val TAG = "ReminiscenceHelper"
-  private val EDIT_MEMORY = 102
-
-
+  private val mContext = context
+  private val mContainer = container
+  private val mListener:SearchViewInterface.Listener = listener
+  
+  
   fun remember(memories: MutableList<Memory>): ReminiscenceHelper {
 
     // Clear the container
-    container.removeAllViews()
+    mContainer.removeAllViews()
 
     // Add memories to container
     for (memory in memories) {
       // Create root
       val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-      val margin = activity.resources.getDimensionPixelSize(R.dimen.memory_top_bottom_margin)
+      val margin = mContext.resources.getDimensionPixelSize(R.dimen.memory_top_bottom_margin)
       params.setMargins(0, margin, 0, margin)
-      var root = LinearLayout(activity)
+      var root = LinearLayout(mContext)
       root.layoutParams = params
 
       // Inflate root
-      root = LayoutInflater.from(activity).inflate(R.layout.list_item_memory, root) as LinearLayout
+      root = LayoutInflater.from(mContext).inflate(R.layout.list_item_memory, root) as LinearLayout
   
       val titleTextView = root.titleTextView
       val dateTextView = root.dateTextView
@@ -89,7 +91,7 @@ class ReminiscenceHelper(
       setupButtonContainer(memories, deleteButton, editButton)
 
 
-      container.addView(root)
+      mContainer.addView(root)
     }
 
     return this
@@ -99,7 +101,7 @@ class ReminiscenceHelper(
 
 
   fun forget(){
-    container.removeAllViews()
+    mContainer.removeAllViews()
   }
   
   
@@ -128,26 +130,26 @@ class ReminiscenceHelper(
 
           // Create root
           val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-          params.bottomMargin = activity.resources.getDimensionPixelSize(R.dimen.memory_image_bottom_margin)
-          var root = LinearLayout(activity)
+          params.bottomMargin = mContext.resources.getDimensionPixelSize(R.dimen.memory_image_bottom_margin)
+          var root = LinearLayout(mContext)
           root.layoutParams = params
 
           // Inflate root
-          root = LayoutInflater.from(activity).inflate(R.layout.memory_image, root) as LinearLayout
+          root = LayoutInflater.from(mContext).inflate(R.layout.memory_image, root) as LinearLayout
           val imageView = root.memory_image_view
 
 
           // Setup image view
-          Glide.with(activity).load(imgFile).into(imageView)
+          Glide.with(mContext).load(imgFile).into(imageView)
           
           
           // Set on click listener to image to open it another app
           root.setOnClickListener {
             val parent = it.parent as LinearLayout
             val index = parent.indexOfChild(it)
-            val imagePath = images[index]
+            val path = images[index]
   
-            shareFile(imagePath)
+            shareFile(path)
           }
 
 
@@ -170,14 +172,14 @@ class ReminiscenceHelper(
 
       for (link in links){
         // Create root
-        val density = activity.resources.displayMetrics.density
+        val density = mContext.resources.displayMetrics.density
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         params.bottomMargin = (5 * density).toInt()
-        var root = LinearLayout(activity)
+        var root = LinearLayout(mContext)
         root.layoutParams = params
         
         // Inflate link list item
-        root = LayoutInflater.from(activity).inflate(R.layout.list_item_link, root) as LinearLayout
+        root = LayoutInflater.from(mContext).inflate(R.layout.list_item_link, root) as LinearLayout
         val linkTextView = root.linkTextView
 
         // Put underline to text
@@ -196,7 +198,7 @@ class ReminiscenceHelper(
           if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://$url"
   
-          activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+          mContext.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
         base.linkContainer.addView(root)
@@ -217,14 +219,14 @@ class ReminiscenceHelper(
 
 
       // Calculate column and row numbers
-      val screenWidth = activity.resources.displayMetrics.widthPixels
-      val pagePadding = activity.resources.getDimensionPixelSize(R.dimen.page_padding) * 2
-      val memoryPadding = activity.resources.getDimensionPixelSize(R.dimen.section_padding) * 2
-      val documentContainerPadding = activity.resources.getDimensionPixelSize(R.dimen.subsection_padding) * 2
+      val screenWidth = mContext.resources.displayMetrics.widthPixels
+      val pagePadding = mContext.resources.getDimensionPixelSize(R.dimen.page_padding) * 2
+      val memoryPadding = mContext.resources.getDimensionPixelSize(R.dimen.section_padding) * 2
+      val documentContainerPadding = mContext.resources.getDimensionPixelSize(R.dimen.subsection_padding) * 2
       val freeSpaceForContainer = screenWidth - pagePadding - memoryPadding - documentContainerPadding
 
-      val documentWidth = activity.resources.getDimensionPixelSize(R.dimen.document_width)
-      val documentMargin = activity.resources.getDimensionPixelSize(R.dimen.grid_margin)
+      val documentWidth = mContext.resources.getDimensionPixelSize(R.dimen.document_width)
+      val documentMargin = mContext.resources.getDimensionPixelSize(R.dimen.grid_margin)
       val totalDocumentWidth = documentWidth + (documentMargin * 2)
 
       val columnCount = freeSpaceForContainer / totalDocumentWidth
@@ -252,11 +254,11 @@ class ReminiscenceHelper(
         param.columnSpec = GridLayout.spec(columnSpec)
         param.rowSpec = GridLayout.spec(rowSpec)
         param.setMargins(documentMargin, documentMargin, documentMargin, documentMargin)
-        var root = LinearLayout(activity)
+        var root = LinearLayout(mContext)
         root.layoutParams = param
 
         // Inflate link list item
-        root = LayoutInflater.from(activity).inflate(R.layout.list_item_document, root) as LinearLayout
+        root = LayoutInflater.from(mContext).inflate(R.layout.list_item_document, root) as LinearLayout
         val documentIconImageView = root.documentIconImageView
         val documentNameTextView = root.documentNameTextView
 
@@ -298,21 +300,21 @@ class ReminiscenceHelper(
 
 
     // Firstly add "Tags:" label
-    val tagsLabelTextView = TextView(activity)
+    val tagsLabelTextView = TextView(mContext)
     tagsLabelTextView.setPadding(0, 5, 5, 0)
-    val tagsLabel = activity.resources.getString(R.string.tags_semicolon)
+    val tagsLabel = mContext.resources.getString(R.string.tags_semicolon)
     tagsLabelTextView.text = tagsLabel
 
-    val labelLayout = LinearLayout(activity)
+    val labelLayout = LinearLayout(mContext)
     labelLayout.addView(tagsLabelTextView, layoutParams)
     container.addView(labelLayout)
 
 
     // Then add the tag(s)
     for (tag in tags) {
-      val tagLayout = LinearLayout(activity)
+      val tagLayout = LinearLayout(mContext)
       
-      val view = LayoutInflater.from(activity).inflate(R.layout.tag_view, null)
+      val view = LayoutInflater.from(mContext).inflate(R.layout.tag_view, null)
       val textView = view.textView
 
       textView.text = tag
@@ -334,12 +336,12 @@ class ReminiscenceHelper(
   private fun setupButtonContainer(memories: MutableList<Memory>, deleteButton: ImageView, editButton: ImageView){
     
     deleteButton.setOnClickListener {
-      activity.hideKeyboard(deleteButton)
+      mContext.hideKeyboard(deleteButton)
   
-      (activity as MainActivity).interlayer.visibility = View.VISIBLE
+      (mContext as MainActivity).interlayer.visibility = View.VISIBLE
   
       val memoryView = deleteButton.parent.parent.parent as LinearLayout
-      val position = container.indexOfChild(memoryView)
+      val position = mContainer.indexOfChild(memoryView)
       val memory = memories[position]
       
       val deleteConfirmationFragment = DeleteConfirmationFragment.newInstance(memory)
@@ -351,37 +353,33 @@ class ReminiscenceHelper(
           for (doc in memory.documents) deleteFilesFromStorage(doc)
           
           // Delete memory from database
-          val database = MemoryDatabase(activity, null)
+          val database = MemoryDatabase(mContext, null)
           database.forget(memory)
   
           // Remove memory from list
           memories.removeAt(position)
   
           // Finally remove memory from memory container linear layout
-          container.removeView(memoryView)
+          mContainer.removeView(memoryView)
         }
       }
       
-      supportFragmentManager.beginTransaction()
-        .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_bottom, R.anim.exit_to_top)
-        .add(R.id.fragment_container, deleteConfirmationFragment, "DeleteConfirmationFragment")
-        .addToBackStack("DeleteConfirmationFragment")
-        .commit()
+      
+      mListener.onClickDeleteButton(deleteConfirmationFragment)
       
     }
 
 
     editButton.setOnClickListener {
-      activity.hideKeyboard(editButton)
+      mContext.hideKeyboard(editButton)
       
       val memoryView = deleteButton.parent.parent.parent as LinearLayout
-      val position = container.indexOfChild(memoryView)
+      val position = mContainer.indexOfChild(memoryView)
       val memory = memories[position]
 
-      val intent = Intent(activity, AddMemoryActivity::class.java)
+      val intent = Intent(mContext, AddMemoryActivity::class.java)
       intent.putExtra("editMemory", memory.id)
-      activity.startActivityForResult(intent, EDIT_MEMORY)
-
+      mListener.onClickEditButton(intent)
     }
   }
   
@@ -407,16 +405,16 @@ class ReminiscenceHelper(
   
     // Set flag to give temporary permission to external app to use FileProvider
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-    val uri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID, file)
+    val uri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID, file)
   
     val dataType = DocumentExtensionHelper().getFileType(file.extension)
   
     intent.setDataAndType(uri, dataType)
   
     // validate that the device can open your File!
-    val packageManager = activity.packageManager
+    val packageManager = mContext.packageManager
     if (intent.resolveActivity(packageManager) != null) {
-      activity.startActivity(intent)
+      mContext.startActivity(intent)
     }
   }
   

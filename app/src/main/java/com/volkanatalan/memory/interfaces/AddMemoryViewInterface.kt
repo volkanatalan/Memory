@@ -2,7 +2,7 @@ package com.volkanatalan.memory.interfaces
 
 import android.view.View
 
-interface AddMemoryInterface {
+interface AddMemoryViewInterface {
   
   
   /**
@@ -12,7 +12,7 @@ interface AddMemoryInterface {
   
   
   
-  interface MemoryAddListener {
+  interface Listener {
   
     fun onAddImage()
   
@@ -20,8 +20,4 @@ interface AddMemoryInterface {
     
     fun afterSaveMemory(isEditing: Boolean, memoryId: Int)
   }
-  
-  
-  
-  fun setOnSaveMemoryListener(listener: MemoryAddListener)
 }

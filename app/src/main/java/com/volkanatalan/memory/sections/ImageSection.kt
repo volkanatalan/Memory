@@ -5,18 +5,18 @@ import android.view.View
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.volkanatalan.memory.R
-import com.volkanatalan.memory.interfaces.AddMemoryInterface
+import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import java.io.File
 
-class ImageSection( root: View,
-                    listener: AddMemoryInterface.MemoryAddListener?,
-                    memory: Memory,
-                    isEditing: Boolean,
-                    editMemory: Memory?,
-                    imagesToRemove: MutableList<String> ) {
+class ImageSection(root: View,
+                   listener: AddMemoryViewInterface.Listener?,
+                   memory: Memory,
+                   isEditing: Boolean,
+                   editMemory: Memory?,
+                   imagesToRemove: MutableList<String> ) {
   
   
   private val mContext = root.context

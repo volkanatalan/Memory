@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.databases.MemoryDatabase
-import com.volkanatalan.memory.interfaces.AddMemoryInterface
+import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.sections.*
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
@@ -18,13 +18,13 @@ import java.nio.channels.FileChannel
 import java.util.*
 
 
-class AddMemoryView(inflater :LayoutInflater,
-                    listener: AddMemoryInterface.MemoryAddListener?,
-                    editMemoryId: Int ):
-  AddMemoryInterface {
+class AddMemoryViewView(inflater :LayoutInflater,
+                        listener: AddMemoryViewInterface.Listener?,
+                        editMemoryId: Int ):
+  AddMemoryViewInterface {
   
   
-  private val TAG = "AddMemoryView"
+  private val TAG = "AddMemoryViewView"
   private val mRootView = inflater.inflate(R.layout.activity_add_memory, null)
   private val mContext = mRootView.context
   var memory = Memory()
@@ -82,9 +82,6 @@ class AddMemoryView(inflater :LayoutInflater,
   override fun getRootView(): View = mRootView
   
   
-  override fun setOnSaveMemoryListener(listener: AddMemoryInterface.MemoryAddListener) {
-  
-  }
   
   
   

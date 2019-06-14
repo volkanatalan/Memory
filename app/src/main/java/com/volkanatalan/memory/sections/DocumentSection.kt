@@ -5,14 +5,14 @@ import android.view.View
 import android.widget.LinearLayout
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.FileIconHelper
-import com.volkanatalan.memory.interfaces.AddMemoryInterface
+import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import java.io.File
 
 class DocumentSection(root: View,
-                      listener: AddMemoryInterface.MemoryAddListener?,
+                      listener: AddMemoryViewInterface.Listener?,
                       memory: Memory,
                       isEditing: Boolean,
                       editMemory: Memory?,
