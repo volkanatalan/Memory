@@ -235,16 +235,20 @@ class MainActivity : AppCompatActivity() {
       
       when(event.action){
         MotionEvent.ACTION_MOVE -> {
+          val isNeedScroll = scroll_view.height < search_results_container.height
           val currentTouchY = event.y.toInt()
           if (firstTouchList.size == 0) firstTouchList.add(currentTouchY)
           val firstTouchY = firstTouchList[0]
           val distance = abs(currentTouchY - firstTouchY)
-          //Log.d(TAG, "firstTouchY: $firstTouchY")
-          //Log.d(TAG, "currentTouchY: $currentTouchY")
-          //Log.d(TAG, "distance: $distance")
+          Log.d(TAG, "firstTouchY: $firstTouchY")
+          Log.d(TAG, "currentTouchY: $currentTouchY")
+          Log.d(TAG, "distance: $distance")
+          Log.d(TAG, "scroll_view.height: ${scroll_view.height}")
+          Log.d(TAG, "search_results_container.height: ${search_results_container.height}")
+          Log.d(TAG, "isNeedScroll: $isNeedScroll")
           
           if (distance > 30 * density){
-            if (firstTouchY > currentTouchY && !isEditTextHidden){
+            if (firstTouchY > currentTouchY && !isEditTextHidden && isNeedScroll){
               hideEditText(true)
             }
             
