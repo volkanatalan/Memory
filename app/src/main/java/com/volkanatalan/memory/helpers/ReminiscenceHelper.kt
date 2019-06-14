@@ -364,7 +364,7 @@ class ReminiscenceHelper(
       
       supportFragmentManager.beginTransaction()
         .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_bottom, R.anim.exit_to_top)
-        .add(R.id.fragmentContainer, deleteConfirmationFragment, "DeleteConfirmationFragment")
+        .add(R.id.fragment_container, deleteConfirmationFragment, "DeleteConfirmationFragment")
         .addToBackStack("DeleteConfirmationFragment")
         .commit()
       

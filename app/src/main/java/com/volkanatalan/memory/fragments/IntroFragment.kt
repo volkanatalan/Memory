@@ -15,14 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.MainActivity
-import kotlinx.android.synthetic.main.fragment_opening.view.*
+import kotlinx.android.synthetic.main.fragment_intro.view.*
 
 
-class OpeningFragment : Fragment() {
+class IntroFragment : Fragment() {
   
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     // Inflate the layout for this fragment
-    val view = inflater.inflate(R.layout.fragment_opening, container, false)
+    val view = inflater.inflate(R.layout.fragment_intro, container, false)
     val base = view.base as FrameLayout
     
     val density = resources.displayMetrics.density

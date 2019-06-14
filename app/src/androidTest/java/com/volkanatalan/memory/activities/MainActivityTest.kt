@@ -275,7 +275,7 @@ class MainActivityTest {
         withId(R.id.search_image_view),
         childAtPosition(
           childAtPosition(
-            withId(R.id.searchContainer),
+            withId(R.id.search_container),
             0
           ),
           0
@@ -634,10 +634,10 @@ class MainActivityTest {
     // Search a memory
     val searchEditText = onView(
       allOf(
-        withId(R.id.searchEditText),
+        withId(R.id.search_edit_text),
         childAtPosition(
           childAtPosition(
-            withId(R.id.searchContainer),
+            withId(R.id.search_container),
             0
           ),
           1
@@ -660,10 +660,10 @@ class MainActivityTest {
     // Click on clean search button
     val cleanSearchImageView = onView(
       allOf(
-        withId(R.id.cleanSearch),
+        withId(R.id.clear_search),
         childAtPosition(
           childAtPosition(
-            withId(R.id.searchContainer),
+            withId(R.id.search_container),
             0
           ),
           2

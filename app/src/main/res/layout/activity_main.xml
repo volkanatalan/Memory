@@ -28,12 +28,12 @@
       android:paddingBottom="@dimen/page_padding">
   
       <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     
         <LinearLayout
-          android:id="@+id/searchResultsContainer"
+          android:id="@+id/search_results_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingTop="@dimen/search_edit_text_height"
@@ -41,12 +41,12 @@
           android:paddingStart="@dimen/page_padding"
           android:paddingEnd="@dimen/page_padding"
           android:orientation="vertical"/>
-  
+        
       </ScrollView>
   
   
       <FrameLayout
-        android:id="@+id/searchContainer"
+        android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/page_padding"
@@ -70,7 +70,7 @@
             app:srcCompat="@drawable/search"/>
   
           <EditText
-            android:id="@+id/searchEditText"
+            android:id="@+id/search_edit_text"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="@dimen/search_edit_text_height"
@@ -80,7 +80,7 @@
             android:singleLine="true" />
   
           <ImageView
-            android:id="@+id/cleanSearch"
+            android:id="@+id/clear_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/search_button_padding"
@@ -102,16 +102,16 @@
     android:focusable="true"
     android:visibility="gone"/>
   
-  <FrameLayout
-    android:id="@+id/fragmentContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-  
   <RelativeLayout
-    android:id="@+id/adBannerContainer"
+    android:id="@+id/ad_banner_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/ad_banner_height"
     android:layout_gravity="bottom|center_horizontal"
     android:gravity="center"/>
+  
+  <FrameLayout
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
 </FrameLayout>

@@ -20,7 +20,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
-import com.volkanatalan.memory.fragments.OpeningFragment
+import com.volkanatalan.memory.fragments.IntroFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.abs
@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
   private lateinit var reminiscenceHelper: ReminiscenceHelper
   private var EDIT_MEMORY = 0
   private var CHOOSE_SEARCH_ITEM = 0
-  private var isEditTextAnimating = false
   private var isEditTextHidden = false
   private lateinit var mFireBaseAnalytics: FirebaseAnalytics
   private lateinit var mInterstitialAd: InterstitialAd
   private var isRememberedRandom = false
+  private lateinit var mMemoryDatabase: MemoryDatabase
   
   
   
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     EDIT_MEMORY = resources.getInteger(R.integer.edit_memory)
     CHOOSE_SEARCH_ITEM = resources.getInteger(R.integer.choose_search_item)
   
+    mMemoryDatabase = MemoryDatabase(this@MainActivity, null)
     
     showIntro()
     setSupportActionBar(toolbar)
@@ -70,14 +71,14 @@ class MainActivity : AppCompatActivity() {
       if (requestCode == EDIT_MEMORY) {
         val memoryId = intent.getIntExtra("updateMemory", -1)
         if (memoryId > -1) {
-          updatemMemories(memoryId)
+          updateMemory(memoryId)
           reminiscenceHelper.remember(mMemories)
         }
       }
       
       else if (requestCode == CHOOSE_SEARCH_ITEM){
         val searchItem = intent.getStringExtra("searchItem")
-        searchEditText.setText(searchItem)
+        search_edit_text.setText(searchItem)
       }
     }
   }
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
 
   override fun onBackPressed() {
-    val searchText = searchEditText.text.toString()
+    val searchText = search_edit_text.text.toString()
     val currentFragments = supportFragmentManager.fragments
   
     when {
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity() {
       
       searchText == "" -> super.onBackPressed()
       
-      else -> searchEditText.setText("")
+      else -> search_edit_text.setText("")
     }
   }
 
@@ -146,27 +147,28 @@ class MainActivity : AppCompatActivity() {
     
     
     // Clear edit text when clicked on x button
-    cleanSearch.setOnClickListener {
-      searchEditText.setText("")
+    clear_search.setOnClickListener {
+      search_edit_text.setText("")
     }
     
     // Set on text changed listener to edit text
-    searchEditText.addTextChangedListener(object:TextWatcher{
+    search_edit_text.addTextChangedListener(object:TextWatcher{
       override fun afterTextChanged(s: Editable?) {
         var searchText = s.toString()
 
-        if (searchText.length > 1) {
+        // If search text length is bigger than 1 and last character
+        // of it is not space, search for the records on database
+        if (searchText.length > 1 && searchText.last() != ' ') {
           
           while (searchText.contains("'")){
             val index = searchText.indexOf("'")
             searchText = searchText.substring(0, index) + " " + searchText.substring(index + 1, searchText.length)
           }
           
-          val database = MemoryDatabase(this@MainActivity, null)
-          mMemories = database.rememberMemories(searchText)
-          database.close()
-          reminiscenceHelper.remember(mMemories)
-          isRememberedRandom = false
+          val searchThread = remember(searchText)
+          searchThread.isDaemon = true
+          searchThread.start()
+          
         }
         
         else if (!isRememberedRandom){
@@ -180,12 +182,8 @@ class MainActivity : AppCompatActivity() {
   
   
         // Show ad
-        if (mInterstitialAd.isLoaded) {
-          mInterstitialAd.show()
-        } else {
-          Log.d(TAG, "The interstitial wasn't loaded yet.")
-        }
-        
+        if (mInterstitialAd.isLoaded) mInterstitialAd.show()
+        else Log.d(TAG, "The interstitial wasn't loaded yet.")
         
       }
 
@@ -197,17 +195,29 @@ class MainActivity : AppCompatActivity() {
 
     })
   }
+  
+  
+  
+  
+  
+  private fun remember(text: String) = Thread( Runnable {
+    runOnUiThread {
+      mMemories = mMemoryDatabase.rememberMemories(text)
+      reminiscenceHelper.remember(mMemories)
+      isRememberedRandom = false
+    }
+  })
 
 
 
 
 
   private fun setupSearchResultsContainer() {
-    reminiscenceHelper = ReminiscenceHelper(this, searchResultsContainer, supportFragmentManager)
+    reminiscenceHelper = ReminiscenceHelper(this, search_results_container, supportFragmentManager)
     reminiscenceHelper.onTagClickListener = object : ReminiscenceHelper.OnTagClickListener {
       override fun onClick(tag: String) {
-        val currentSearch = searchEditText.text.toString()
-        if (currentSearch != tag) searchEditText.setText(tag)
+        val currentSearch = search_edit_text.text.toString()
+        if (currentSearch != tag) search_edit_text.setText(tag)
       }
     }
     
@@ -217,32 +227,36 @@ class MainActivity : AppCompatActivity() {
     
     
     // Hide keyboard and search edit text
-    var firstTouchY = 0
     val density = resources.displayMetrics.density
+    val firstTouchList = mutableListOf<Int>()
     
-    scrollView.setOnTouchListener { _, event ->
+    scroll_view.setOnTouchListener { _, event ->
       hideKeyboard(true)
       
       when(event.action){
-        MotionEvent.ACTION_DOWN -> {
-          firstTouchY = event.y.toInt()
-          //Log.d(TAG, "firstTouchY: $firstTouchY")
-        }
-        
         MotionEvent.ACTION_MOVE -> {
           val currentTouchY = event.y.toInt()
+          if (firstTouchList.size == 0) firstTouchList.add(currentTouchY)
+          val firstTouchY = firstTouchList[0]
           val distance = abs(currentTouchY - firstTouchY)
-          //Log.d(TAG, "scrollY: $currentTouchY")
+          //Log.d(TAG, "firstTouchY: $firstTouchY")
+          //Log.d(TAG, "currentTouchY: $currentTouchY")
+          //Log.d(TAG, "distance: $distance")
           
           if (distance > 30 * density){
-            if (firstTouchY > currentTouchY && !isEditTextHidden && !isEditTextAnimating){
+            if (firstTouchY > currentTouchY && !isEditTextHidden){
               hideEditText(true)
             }
             
-            else if (firstTouchY < currentTouchY && isEditTextHidden && !isEditTextAnimating) {
+            else if (firstTouchY < currentTouchY && isEditTextHidden) {
               hideEditText(false)
             }
           }
+        }
+        
+        MotionEvent.ACTION_UP -> {
+          //Log.d(TAG, "ACTION_UP")
+          firstTouchList.clear()
         }
       }
       
@@ -256,26 +270,25 @@ class MainActivity : AppCompatActivity() {
   
   private fun hideEditText(hide: Boolean){
     
-    isEditTextAnimating = true
     val searchEditTextHeight = resources.getDimension(R.dimen.search_edit_text_height)
+    val searchEditTextCurrentHeight = search_container.height.toFloat()
     val valueAnimator = if (hide){
-      ValueAnimator.ofFloat(searchEditTextHeight, 0f)
+      ValueAnimator.ofFloat(searchEditTextCurrentHeight, 0f)
     } else {
-      ValueAnimator.ofFloat(0f, searchEditTextHeight)
+      ValueAnimator.ofFloat(searchEditTextCurrentHeight, searchEditTextHeight)
     }
     
     valueAnimator.interpolator = LinearInterpolator()
     valueAnimator.duration = 300
     valueAnimator.doOnEnd {
-      isEditTextAnimating = false
       isEditTextHidden = hide
     }
     
     valueAnimator.addUpdateListener {
       val value = it.animatedValue as Float
-      val params = searchContainer.layoutParams
+      val params = search_container.layoutParams
       params.height = value.toInt()
-      searchContainer.layoutParams = params
+      search_container.layoutParams = params
       //Log.d(TAG, "searchEditTextHeight: ${value.toInt()}")
     }
     
@@ -289,12 +302,12 @@ class MainActivity : AppCompatActivity() {
   fun hideKeyboard(hide: Boolean) {
     if (hide) {
       val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-      inputMethodManager.hideSoftInputFromWindow(searchEditText.windowToken, 0)
+      inputMethodManager.hideSoftInputFromWindow(search_edit_text.windowToken, 0)
     }
     else {
       val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-      searchEditText.requestFocus()
-      inputMethodManager.showSoftInput(searchEditText, 0)
+      search_edit_text.requestFocus()
+      inputMethodManager.showSoftInput(search_edit_text, 0)
     }
   }
   
@@ -304,8 +317,8 @@ class MainActivity : AppCompatActivity() {
   
   private fun showIntro(){
     supportFragmentManager.beginTransaction()
-      .replace(R.id.fragmentContainer, OpeningFragment(), "OpeningFragment")
-      .addToBackStack("OpeningFragment")
+      .replace(R.id.fragment_container, IntroFragment(), "IntroFragment")
+      .addToBackStack("IntroFragment")
       .commit()
   }
   
@@ -314,9 +327,7 @@ class MainActivity : AppCompatActivity() {
   
   
   private fun rememberRandom(){
-    val database = MemoryDatabase(this, null)
-    val randomMemory = database.rememberRandomMemory()
-    database.close()
+    val randomMemory = mMemoryDatabase.rememberRandomMemory()
     if (randomMemory != null) {
       mMemories.clear()
       mMemories.add(randomMemory)
@@ -329,7 +340,7 @@ class MainActivity : AppCompatActivity() {
   
   
   
-  private fun updatemMemories(id: Int){
+  private fun updateMemory(id: Int){
     
     // Get the index of the memory to update
     var index = -1
@@ -340,7 +351,7 @@ class MainActivity : AppCompatActivity() {
     
     // if there is a memory with the same id, update it
     if (index > -1){
-      val updatedMemory = MemoryDatabase(this, null).remember(id)
+      val updatedMemory = mMemoryDatabase.remember(id)
       mMemories[index] = updatedMemory
     }
   }
@@ -357,7 +368,7 @@ class MainActivity : AppCompatActivity() {
     val mAdView = AdView(this)
     mAdView.adSize = AdSize.BANNER
     mAdView.adUnitId = resources.getString(R.string.banner_ad)
-    adBannerContainer.addView(mAdView)
+    ad_banner_container.addView(mAdView)
     val adRequest = AdRequest.Builder().build()
     mAdView.loadAd(adRequest)
   

@@ -163,7 +163,7 @@ class AddMemoryView(inflater :LayoutInflater,
       mRootView.documentContainer.removeAllViews()
   
       // Scroll to top
-      mRootView.scrollView.scrollTo(0, 0)
+      mRootView.scroll_view.scrollTo(0, 0)
   
       // Focus on title edit text
       mRootView.titleEditText.requestFocus()
