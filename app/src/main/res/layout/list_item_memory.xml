@@ -17,8 +17,7 @@
     android:textSize="@dimen/memory_title_text_size"
     android:textColor="@color/black"
     android:text="Memory Title"
-    android:textIsSelectable="true"
-  />
+    android:textIsSelectable="true"/>
   
   <TextView
     android:id="@+id/dateTextView"
@@ -27,8 +26,7 @@
     android:layout_marginBottom="10dp"
     android:textSize="@dimen/memory_date_text_size"
     android:textColor="@color/black"
-    android:text="01.06.2019 20:19"
-  />
+    android:text="01.06.2019 20:19"/>
   
   <LinearLayout
     android:id="@+id/imageContainer"

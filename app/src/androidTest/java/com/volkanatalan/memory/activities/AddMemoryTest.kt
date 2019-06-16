@@ -5,9 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
@@ -23,22 +21,19 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class MainActivityTest {
+class AddMemoryTest {
   
   @Rule
   @JvmField
   var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
   
   @Test
-  fun mainActivityTest() {
+  fun addMemoryTest() {
     // Added a sleep statement to match the app's execution delay.
     // The recommended way to handle such scenarios is to use Espresso idling resources:
     // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-    
-    
-    
-    // Click on add memory button
+    Thread.sleep(3000)
+  
     val actionMainActivityAdd = onView(
       allOf(
         withId(R.id.action_mainactivity_add), withContentDescription("Add memory"),
@@ -48,20 +43,16 @@ class MainActivityTest {
             1
           ),
           0
-        ),
-        isDisplayed()
+        )
       )
     )
     actionMainActivityAdd.perform(click())
-    
+  
     // Added a sleep statement to match the app's execution delay.
     // The recommended way to handle such scenarios is to use Espresso idling resources:
     // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
     Thread.sleep(2000)
-    
-    
-    
-    // Write memory title
+  
     val titleEditText = onView(
       allOf(
         withId(R.id.titleEditText),
@@ -74,11 +65,8 @@ class MainActivityTest {
         )
       )
     )
-    titleEditText.perform(scrollTo(), replaceText("Demo Title"), closeSoftKeyboard())
-    
-    
-    
-    // Write memory text
+    titleEditText.perform(scrollTo(), replaceText("Demo"), closeSoftKeyboard())
+  
     val textEditText = onView(
       allOf(
         withId(R.id.textEditText),
@@ -91,11 +79,8 @@ class MainActivityTest {
         )
       )
     )
-    textEditText.perform(scrollTo(), replaceText("Demo text"), closeSoftKeyboard())
-    
-    
-    
-    // Write memory tag
+    textEditText.perform(scrollTo(), replaceText("Text"), closeSoftKeyboard())
+  
     val tagEditText = onView(
       allOf(
         withId(R.id.tagEditText),
@@ -109,10 +94,7 @@ class MainActivityTest {
       )
     )
     tagEditText.perform(scrollTo(), replaceText("demo"), closeSoftKeyboard())
-    
-    
-    
-    // Click on add tag button
+  
     val addTagImageView = onView(
       allOf(
         withId(R.id.addTagImageView),
@@ -126,15 +108,418 @@ class MainActivityTest {
       )
     )
     addTagImageView.perform(scrollTo(), click())
+  
+  
+    tagEditText.perform(scrollTo(), replaceText("demo"), closeSoftKeyboard())
+  
+  
+    addTagImageView.perform(scrollTo(), click())
+  
+  
+    tagEditText.perform(scrollTo(), replaceText("demo2"), closeSoftKeyboard())
+  
+    val addImageButton = onView(
+      allOf(
+        withId(R.id.addImageButton),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            2
+          ),
+          1
+        )
+      )
+    )
+    addImageButton.perform(scrollTo(), click())
+  
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(5000)
+  
+    val imageContainer = onView(
+      allOf(
+        withId(R.id.imageContainer)
+      )
+    )
+    imageContainer.perform(scrollTo())
+  
+    val deleteImageImageView = onView(
+      allOf(
+        withId(R.id.deleteImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.imageContainer),
+            1
+          ),
+          2
+        )
+      )
+    )
+    deleteImageImageView.perform(click())
+  
+    val addDocumentButton = onView(
+      allOf(
+        withId(R.id.addDocumentButton),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            3
+          ),
+          1
+        )
+      )
+    )
+    addDocumentButton.perform(scrollTo(), click())
+  
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(5000)
+  
+    val documentContainer = onView(
+      allOf(
+        withId(R.id.documentContainer)
+      )
+    )
+    documentContainer.perform(scrollTo())
+  
+    val deleteDocumentImageView = onView(
+      allOf(
+        withId(R.id.deleteImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.documentContainer),
+            0
+          ),
+          2
+        )
+      )
+    )
+    deleteDocumentImageView.perform(click())
+  
+  
+    addDocumentButton.perform(scrollTo(), click())
+  
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(5000)
+  
+  
+    addImageButton.perform(scrollTo(), click())
+  
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(2000)
+  
+    val linkTitleEditText = onView(
+      allOf(
+        withId(R.id.linkTitleEditText),
+        childAtPosition(
+          childAtPosition(
+            childAtPosition(
+              withId(R.id.linkBase),
+              1
+            ),
+            0
+          ),
+          0
+        )
+      )
+    )
+    linkTitleEditText.perform(scrollTo(), replaceText("Google"), closeSoftKeyboard())
+  
+    val linkAddressEditText = onView(
+      allOf(
+        withId(R.id.linkAddressEditText),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            0
+          ),
+          1
+        )
+      )
+    )
+    linkAddressEditText.perform(scrollTo(), replaceText("google.com"), closeSoftKeyboard())
+  
+    val addLinkImageView = onView(
+      allOf(
+        withId(R.id.addLinkImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.linkBase),
+            1
+          ),
+          1
+        )
+      )
+    )
+    addLinkImageView.perform(scrollTo(), click())
+  
+  
+    linkAddressEditText.perform(replaceText("google.com"), closeSoftKeyboard())
+  
+    val actionAddMemoryActivityDone = onView(
+      allOf(
+        withId(R.id.action_addmemoryactivity_done), withText("Done"),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.toolbar),
+            1
+          ),
+          0
+        )
+      )
+    )
+    actionAddMemoryActivityDone.perform(click(), closeSoftKeyboard())
+  
+    Thread.sleep(1000)
+  }
+  
+  
+  
+  
+  @Test
+  fun interactMemory(){
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(3000)
+    
+    val searchButton = onView(
+      allOf(
+        withId(R.id.search_image_view),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.search_container),
+            0
+          ),
+          0
+        )
+      )
+    )
+    searchButton.perform(click())
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(1000)
+    
+    val listView = onData(anything())
+      .inAdapterView(
+        allOf(
+          withId(R.id.list_view),
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            1
+          )
+        )
+      )
+      .atPosition(0)
+    listView.perform(click())
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(1000)
+    
+    val memory = withParent(
+      childAtPosition(
+        withId(R.id.search_results_container),
+        0
+      ))
+    
+    val image = onView(
+      allOf(
+        withId(R.id.memory_image_view),
+        childAtPosition(
+          childAtPosition(
+            allOf(
+              withId(R.id.imageContainer),
+              withParent(memory)),
+          0
+          ),
+          0
+        ))
+    )
+    image.perform(scrollTo(), click())
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(3000)
+    
+    val link = onView(
+      allOf(
+        childAtPosition(
+          allOf(
+            withId(R.id.linkContainer),
+            childAtPosition(
+              allOf(
+                withId(R.id.linkBase),
+                withParent(memory)
+              ),
+              1
+            )
+          ),
+          0
+        )
+      )
+    )
+    link.perform(scrollTo(), click())
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(3000)
+    
+    val document = onView(
+      allOf(
+        childAtPosition(
+          allOf(
+            withId(R.id.documentContainer),
+            childAtPosition(
+              allOf(
+                withId(R.id.documentBase), withParent(memory)
+              ),
+              1
+            )
+          ),
+          1
+        )
+      )
+    )
+    document.perform(scrollTo(), click())
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(3000)
+    
+    val tag = onView(
+      allOf(
+        withId(R.id.root),
+        childAtPosition(
+          childAtPosition(
+            allOf(
+            withId(R.id.tagContainer),
+              withParent(memory)
+            ),
+            2
+          ),
+          0
+        )
+      )
+    )
+    tag.perform(scrollTo(), click())
+  
+    
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(2000)
     
     
+    val editButtonImageView = onView(
+      allOf(
+        withId(R.id.editButtonImageView),
+        childAtPosition(
+          allOf(
+            withId(R.id.buttonContainer),
+            withParent(memory)
+          ),
+          0
+        )
+      )
+    )
+    editButtonImageView.perform(scrollTo(), click())
     
-    // Write another tag
-    tagEditText.perform(scrollTo(), replaceText("demo tag"), closeSoftKeyboard())
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(1000)
+  
     
+    val titleEditText = onView(
+      allOf(
+        withId(R.id.titleEditText),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            0
+          ),
+          1
+        )
+      )
+    )
+    titleEditText.perform(scrollTo(), click(), replaceText("Demo2"),closeSoftKeyboard())
+  
+  
+  
+    val textEditText = onView(
+      allOf(
+        withId(R.id.textEditText),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            0
+          ),
+          2
+        )
+      )
+    )
+    textEditText.perform(scrollTo(), replaceText("Text2"), closeSoftKeyboard())
+  
+  
+  
+    val tagEditText = onView(
+      allOf(
+        withId(R.id.tagEditText),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            1
+          ),
+          0
+        )
+      )
+    )
+    tagEditText.perform(scrollTo(), replaceText("demo3"), closeSoftKeyboard())
     
+    val deleteTag = onView(
+      allOf(
+        withId(R.id.deleteImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.tagContainer),
+            1
+          ),
+          1
+        )
+      )
+    )
+    deleteTag.perform(scrollTo(), click())
     
-    // Add an image to memory
+    val deleteImageImageView2 = onView(
+      allOf(
+        withId(R.id.deleteImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.imageContainer),
+            0
+          ),
+          2
+        )
+      )
+    )
+    deleteImageImageView2.perform(scrollTo(), click())
+  
+  
+  
     val addImageButton = onView(
       allOf(
         withId(R.id.addImageButton),
@@ -149,16 +534,27 @@ class MainActivityTest {
     )
     addImageButton.perform(scrollTo(), click())
     
-    
-    
     // Added a sleep statement to match the app's execution delay.
     // The recommended way to handle such scenarios is to use Espresso idling resources:
     // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
     Thread.sleep(5000)
     
-    
-    
-    // Add a document to memory
+    val deleteDocumentImageView2 = onView(
+      allOf(
+        withId(R.id.deleteImageView),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.documentContainer),
+            0
+          ),
+          2
+        )
+      )
+    )
+    deleteDocumentImageView2.perform(scrollTo(), click())
+  
+  
+  
     val addDocumentButton = onView(
       allOf(
         withId(R.id.addDocumentButton),
@@ -173,372 +569,11 @@ class MainActivityTest {
     )
     addDocumentButton.perform(scrollTo(), click())
     
-    
-    
     // Added a sleep statement to match the app's execution delay.
     // The recommended way to handle such scenarios is to use Espresso idling resources:
     // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
     Thread.sleep(5000)
     
-    
-    
-    // Write link title
-    val linkTitleEditText = onView(
-      allOf(
-        withId(R.id.linkTitleEditText),
-        childAtPosition(
-          childAtPosition(
-            withClassName(`is`("android.widget.LinearLayout")),
-            0
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    linkTitleEditText.perform(scrollTo(), replaceText("Link"), closeSoftKeyboard())
-    
-    
-    
-    // Write link address
-    val linkAddressEditText = onView(
-      allOf(
-        withId(R.id.linkAddressEditText),
-        childAtPosition(
-          childAtPosition(
-            withClassName(`is`("android.widget.LinearLayout")),
-            0
-          ),
-          1
-        ),
-        isDisplayed()
-      )
-    )
-    linkAddressEditText.perform(replaceText("google.com"), closeSoftKeyboard())
-    
-    
-    
-    // Click on add link button
-    val addLinkImageView = onView(
-      allOf(
-        withId(R.id.addLinkImageView),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.linkBase),
-            1
-          ),
-          1
-        )
-      )
-    )
-    addLinkImageView.perform(scrollTo(), click())
-    
-    
-    // Write another link. Only address this time.
-    linkAddressEditText.perform(replaceText("google.com"), closeSoftKeyboard())
-    
-    
-    
-    // Click on add memory button
-    val actionAddMemoryActivityDone = onView(
-      allOf(
-        withId(R.id.action_addmemoryactivity_done), withText("Done"),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.toolbar),
-            1
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    actionAddMemoryActivityDone.perform(click())
-    
-    
-    
-    // Press back to go back to main activity
-    pressBack()
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(2000)
-    
-    
-    
-    // Click search button to get all saved memories
-    val searchImageView = onView(
-      allOf(
-        withId(R.id.search_image_view),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.search_container),
-            0
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    searchImageView.perform(click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(1000)
-    
-    
-    
-    // Click on the first item of list view
-    val listView = onData(anything())
-      .inAdapterView(
-        allOf(
-          withId(R.id.list_view),
-          childAtPosition(
-            withClassName(`is`("android.widget.LinearLayout")),
-            1
-          )
-        )
-      )
-      .atPosition(0)
-    listView.perform(click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(2000)
-    
-    
-    
-    // Click on the first image of the memory to open it
-    val imageContainer = onView(
-      allOf(
-        childAtPosition(
-          allOf(
-            withId(R.id.imageContainer),
-            childAtPosition(
-              withClassName(`is`("android.widget.LinearLayout")),
-              2
-            )
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    imageContainer.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-    
-    
-    
-    // Click on the first link to open it
-    val linkContainer = onView(
-      allOf(
-        childAtPosition(
-          allOf(
-            withId(R.id.linkContainer),
-            childAtPosition(
-              withId(R.id.linkBase),
-              1
-            )
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    linkContainer.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-    
-    
-    
-    // Click on the first document to open it
-    val document = onView(
-      allOf(
-        childAtPosition(
-          allOf(
-            withId(R.id.documentContainer),
-            childAtPosition(
-              withId(R.id.documentBase),
-              1
-            )
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    document.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-    
-    
-    
-    // Click on the first tag to search it
-    val tag = onView(
-      allOf(
-        withId(R.id.root),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.tagContainer),
-            1
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    tag.perform(scrollTo(), click())
-  
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(2000)
-  
-    
-    
-    //Click on edit memory button to edit the details of the memory
-    val editButtonImageView = onView(
-      allOf(
-        withId(R.id.editButtonImageView),
-        childAtPosition(
-          allOf(
-            withId(R.id.buttonContainer),
-            childAtPosition(
-              withClassName(`is`("android.widget.LinearLayout")),
-              7
-            )
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    editButtonImageView.perform(click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(3000)
-    
-    
-    // Change the memory's title
-    titleEditText.perform(scrollTo(), replaceText("Demo Title Edited"), closeSoftKeyboard())
-    
-    
-    
-    // Delete the first tag
-    val deleteTagImageView = onView(
-      allOf(
-        withId(R.id.deleteImageView),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.tagContainer),
-            0
-          ),
-          1
-        ),
-        isDisplayed()
-      )
-    )
-    deleteTagImageView.perform(scrollTo(), click())
-    
-    
-    
-    // Add a new tag
-    tagEditText.perform(replaceText("demo"))
-    addTagImageView.perform(click())
-  
-    
-    
-    // Delete an image
-    val deleteImageImageView = onView(
-      allOf(
-        withId(R.id.deleteImageView),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.imageContainer),
-            0
-          ),
-          2
-        ),
-        isDisplayed()
-      )
-    )
-    deleteImageImageView.perform(scrollTo(), click())
-    
-    
-    // Add an image
-    addImageButton.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-  
-    
-    
-    // Delete a document
-    val deleteDocImageView = onView(
-      allOf(
-        withId(R.id.deleteImageView),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.documentContainer),
-            0
-          ),
-          2
-        ),
-        isDisplayed()
-      )
-    )
-    deleteDocImageView.perform(scrollTo(), click())
-    
-    
-    
-    // Add a document
-    addDocumentButton.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(5000)
-  
-    
-    
-    // Delete a link
     val deleteLinkImageView = onView(
       allOf(
         withId(R.id.deleteImageView),
@@ -548,117 +583,49 @@ class MainActivityTest {
             0
           ),
           1
-        ),
-        isDisplayed()
+        )
       )
     )
     deleteLinkImageView.perform(scrollTo(), click())
-    
-    
-    // Add a link
-    linkTitleEditText.perform(scrollTo(), replaceText("Link2"), closeSoftKeyboard())
-    linkAddressEditText.perform(scrollTo(), replaceText("google.com"), closeSoftKeyboard())
-    
-    
-    
-    // Click on add memory button
-    actionAddMemoryActivityDone.perform(click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(3000)
-    
-    
-    
-    // Delete the memory
-    val deleteButtonImageView = onView(
+  
+  
+  
+    val linkAddressEditText = onView(
       allOf(
-        withId(R.id.deleteButtonImageView),
-        childAtPosition(
-          allOf(
-            withId(R.id.buttonContainer),
-            childAtPosition(
-              withClassName(`is`("android.widget.LinearLayout")),
-              7
-            )
-          ),
-          1
-        ),
-        isDisplayed()
-      )
-    )
-    deleteButtonImageView.perform(scrollTo(), click())
-    
-    
-    
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(2000)
-    
-    
-    
-    // Confirm the deletion
-    val deleteButtonTextView = onView(
-      allOf(
-        withId(R.id.deleteButtonTextView), withText("Delete"),
+        withId(R.id.linkAddressEditText),
         childAtPosition(
           childAtPosition(
             withClassName(`is`("android.widget.LinearLayout")),
-            1
-          ),
-          0
-        ),
-        isDisplayed()
-      )
-    )
-    deleteButtonTextView.perform(click())
-  }
-  
-  
-  
-  
-  
-  @Test
-  fun searchBarTest(){
-    // Added a sleep statement to match the app's execution delay.
-    // The recommended way to handle such scenarios is to use Espresso idling resources:
-    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(3000)
-  
-    
-    
-    // Search a memory
-    val searchEditText = onView(
-      allOf(
-        withId(R.id.search_edit_text),
-        childAtPosition(
-          childAtPosition(
-            withId(R.id.search_container),
             0
           ),
           1
-        ),
-        isDisplayed()
+        )
       )
     )
-    searchEditText.perform(replaceText("demo"), closeSoftKeyboard())
+    linkAddressEditText.perform(scrollTo(), replaceText("facebook.com"), closeSoftKeyboard())
   
   
   
-  
+    val actionAddMemoryActivityDone = onView(
+      allOf(
+        withId(R.id.action_addmemoryactivity_done), withText("Done"),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.toolbar),
+            1
+          ),
+          0
+        )
+      )
+    )
+    actionAddMemoryActivityDone.perform(click())
+    
     // Added a sleep statement to match the app's execution delay.
     // The recommended way to handle such scenarios is to use Espresso idling resources:
     // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-    Thread.sleep(1000)
+    Thread.sleep(5000)
     
-    
-    
-    // Click on clean search button
-    val cleanSearchImageView = onView(
+    val clearSearchButton = onView(
       allOf(
         withId(R.id.clear_search),
         childAtPosition(
@@ -670,17 +637,61 @@ class MainActivityTest {
         )
       )
     )
-    cleanSearchImageView.perform(click())
+    clearSearchButton.perform(click())
   
+  
+  
+    val searchEditText = onView(
+      allOf(
+        withId(R.id.search_edit_text),
+        childAtPosition(
+          childAtPosition(
+            withId(R.id.search_container),
+            0
+          ),
+          1
+        )
+      )
+    )
+    searchEditText.perform(replaceText("de"), closeSoftKeyboard())
     
+    val deleteButtonImageView = onView(
+      allOf(
+        withId(R.id.deleteButtonImageView),
+        childAtPosition(
+          allOf(
+            withId(R.id.buttonContainer),
+            withParent(memory)
+          ),
+          1
+        )
+      )
+    )
+    deleteButtonImageView.perform(scrollTo())
+  
+    Thread.sleep(1000)
+  
+    deleteButtonImageView.perform(click())
+  
+    // Added a sleep statement to match the app's execution delay.
+    // The recommended way to handle such scenarios is to use Espresso idling resources:
+    // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    Thread.sleep(2000)
     
-    // If search edit text is not empty assert exception
-    searchEditText.check(ViewAssertions.matches(withText("")))
+    val deleteConfirmationButton = onView(
+      allOf(
+        withId(R.id.deleteButtonTextView), withText("Delete"),
+        childAtPosition(
+          childAtPosition(
+            withClassName(`is`("android.widget.LinearLayout")),
+            1
+          ),
+          0
+        )
+      )
+    )
+    deleteConfirmationButton.perform(click())
   }
-  
-  
-  
-  
   
   private fun childAtPosition(
     parentMatcher: Matcher<View>, position: Int

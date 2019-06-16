@@ -126,7 +126,6 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
         
         val uri: Uri = intent.clipData!!.getItemAt(i).uri
         val selectedFilePath = FilePathHelper().getPath(this, uri)
-        
         list.add(selectedFilePath!!)
       }
       
@@ -185,12 +184,38 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   
   
   override fun onAddDocument() {
-    val intent = Intent(ACTION_GET_CONTENT).apply {
-      putExtra(EXTRA_ALLOW_MULTIPLE, true)
-      type = "*/*"
+  
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+      != PackageManager.PERMISSION_GRANTED) {
+    
+      // Permission is not granted
+      // Should we show an explanation?
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        // Show an explanation to the user *asynchronously* -- don't block
+        // this thread waiting for the user's response! After the user
+        // sees the explanation, try again to request the permission.
+      }
+    
+      else {
+        // No explanation needed, we can request the permission.
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+          ADD_DOCUMENTS)
+      
+        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+        // app-defined int constant. The callback method gets the
+        // result of the request.
+      }
     }
   
-    startActivityForResult(createChooser(intent, "Select an app to add documents"), ADD_DOCUMENTS)
+    else {
+      // Permission has already been granted
+      val intent = Intent(ACTION_GET_CONTENT).apply {
+        putExtra(EXTRA_ALLOW_MULTIPLE, true)
+        type = "*/*"
+      }
+  
+      startActivityForResult(createChooser(intent, "Select an app to add documents"), ADD_DOCUMENTS)
+    }
   }
   
   
