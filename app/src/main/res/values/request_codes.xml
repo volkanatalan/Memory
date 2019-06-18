@@ -4,4 +4,5 @@
   <integer name="add_documents">101</integer>
   <integer name="edit_memory">102</integer>
   <integer name="choose_search_item">103</integer>
+  <integer name="random_memory_notification">104</integer>
 </resources>

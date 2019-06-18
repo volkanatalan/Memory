@@ -1,6 +1,9 @@
 package com.volkanatalan.memory.activities
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +18,11 @@ import com.volkanatalan.memory.fragments.IntroFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.interfaces.SearchViewInterface
 import com.volkanatalan.memory.models.Memory
+import com.volkanatalan.memory.services.Notification
 import com.volkanatalan.memory.views.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import java.util.*
 
 class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
 
@@ -39,11 +45,19 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
     EDIT_MEMORY = resources.getInteger(R.integer.edit_memory)
     CHOOSE_SEARCH_ITEM = resources.getInteger(R.integer.choose_search_item)
+  
+    setRandomMemoryNotifications(this, true)
     
     showIntro()
     setSupportActionBar(toolbar)
     setupAds()
     setupAnalytics()
+  
+    val notificationMemoryTitle = intent.getStringExtra("memoryTitle")
+    if (notificationMemoryTitle != null) {
+      mSearchView.setSearchText(notificationMemoryTitle)
+      mSearchView.hideKeyboard(true)
+    }
   }
   
   
@@ -142,6 +156,12 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
       startActivity(intent)
       true
     }
+    
+    R.id.action_mainactivity_settings -> {
+      val intent = Intent(this, SettingsActivity::class.java)
+      startActivity(intent)
+      true
+    }
 
     else -> {
       super.onOptionsItemSelected(item)
@@ -177,6 +197,48 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
       .replace(R.id.fragment_container, IntroFragment(), "IntroFragment")
       .addToBackStack("IntroFragment")
       .commit()
+  }
+  
+  
+  
+  
+  
+  companion object {
+    fun setRandomMemoryNotifications(context: Context, set: Boolean) {
+      val TAG = "RandmMemoryNotification"
+      val randomMemoryReqCode = context.resources.getInteger(R.integer.random_memory_notification)
+      val intent = Intent(context, Notification::class.java)
+      val pendingIntent =
+        PendingIntent.getBroadcast(context, randomMemoryReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+      val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+      val recurring = (60 * 60000).toLong()  // in milliseconds
+  
+  
+      
+  
+      if (set) {
+        val notifications = context.resources.getString(R.string.notifications)
+        val allowNotifications = context.resources.getString(R.string.allow_random_notifications)
+        val sharedPreferences = context.getSharedPreferences(notifications, Context.MODE_PRIVATE)
+        val isNotificationsAllowed = sharedPreferences.getBoolean(allowNotifications, true)
+        
+        if (isNotificationsAllowed) {
+          alarmManager.cancel(pendingIntent)
+          alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis, recurring, pendingIntent
+          )
+          Log.d(TAG, "Random memory notification triggered for every ${recurring / 60000} minutes.")
+        }
+        else {
+          Log.d(TAG, "Random memory notification are not allowed.")
+        }
+      }
+      
+      else {
+        alarmManager.cancel(pendingIntent)
+        Log.d(TAG, "Random memory notification canceled.")
+      }
+    }
   }
   
   

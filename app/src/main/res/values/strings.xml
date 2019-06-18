@@ -32,4 +32,7 @@
   <string name="credits">Credits</string>
   <string name="developer_information">Developer Information</string>
   <string name="copied">Copied!</string>
+  <string name="remember_something">Remember something!</string>
+  <string name="settings">Settings</string>
+  <string name="allow_notifications">Allow notifications</string>
 </resources>
