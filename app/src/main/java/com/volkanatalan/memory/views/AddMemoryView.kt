@@ -1,7 +1,7 @@
 package com.volkanatalan.memory.views
 
 import android.text.Editable
-import android.text.style.MetricAffectingSpan
+import android.text.style.CharacterStyle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -241,7 +241,7 @@ class AddMemoryView(inflater :LayoutInflater,
      * Removes rich text formatting
      */
     fun removeSpans(editable: Editable) {
-    val toBeRemovedSpans = editable.getSpans(0, editable.length, MetricAffectingSpan::class.java)
+    val toBeRemovedSpans = editable.getSpans(0, editable.length, CharacterStyle::class.java)
     for (index in 0 until toBeRemovedSpans.size) editable.removeSpan(toBeRemovedSpans[index])
     }
   }
