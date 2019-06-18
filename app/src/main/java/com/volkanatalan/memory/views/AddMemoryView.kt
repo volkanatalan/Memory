@@ -1,5 +1,7 @@
 package com.volkanatalan.memory.views
 
+import android.text.Editable
+import android.text.style.MetricAffectingSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,13 +20,13 @@ import java.nio.channels.FileChannel
 import java.util.*
 
 
-class AddMemoryViewView(inflater :LayoutInflater,
-                        listener: AddMemoryViewInterface.Listener?,
-                        editMemoryId: Int ):
+class AddMemoryView(inflater :LayoutInflater,
+                    listener: AddMemoryViewInterface.Listener?,
+                    editMemoryId: Int ):
   AddMemoryViewInterface {
   
   
-  private val TAG = "AddMemoryViewView"
+  private val TAG = "AddMemoryView"
   private val mRootView = inflater.inflate(R.layout.activity_add_memory, null)
   private val mContext = mRootView.context
   var memory = Memory()
@@ -228,5 +230,19 @@ class AddMemoryViewView(inflater :LayoutInflater,
     
     
     return destinationList
+  }
+  
+  
+  
+  
+  
+  companion object{
+    /**
+     * Removes rich text formatting
+     */
+    fun removeSpans(editable: Editable) {
+    val toBeRemovedSpans = editable.getSpans(0, editable.length, MetricAffectingSpan::class.java)
+    for (index in 0 until toBeRemovedSpans.size) editable.removeSpan(toBeRemovedSpans[index])
+    }
   }
 }

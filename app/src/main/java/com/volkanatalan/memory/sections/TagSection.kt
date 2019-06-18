@@ -5,8 +5,10 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.models.Memory
+import com.volkanatalan.memory.views.AddMemoryView
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_tag_container.view.*
 
@@ -27,6 +29,12 @@ class TagSection(root: View,
     if (mIsEditing){
       for (tag in mMemory.tags)
         addTagToContainer(tag)
+    }
+  
+  
+    // Paste without rich text formatting
+    mRoot.tagEditText.addTextChangedListener { text ->
+      AddMemoryView.removeSpans(text!!)
     }
   
   

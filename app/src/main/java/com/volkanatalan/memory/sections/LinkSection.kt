@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.models.Link
 import com.volkanatalan.memory.models.Memory
+import com.volkanatalan.memory.views.AddMemoryView
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_link_container.view.*
 
@@ -33,12 +35,25 @@ class LinkSection( root: View,
     }
   
   
+    // Paste without rich text formatting
+    mRoot.linkTitleEditText.addTextChangedListener { text ->
+      AddMemoryView.removeSpans(text!!)
+    }
+  
+  
+    // Paste without rich text formatting
+    mRoot.linkAddressEditText.addTextChangedListener { text ->
+      AddMemoryView.removeSpans(text!!)
+    }
+  
+  
     mRoot.addLinkImageView.setOnClickListener {
       val link = getLink()
       
       if (link == null){
         Toast.makeText(mContext, "Address cannot be empty!", Toast.LENGTH_SHORT).show()
       }
+      
       else{
         // Add link to mLinks list
         mMemory.links.add(link)

@@ -19,7 +19,7 @@ import com.google.android.gms.ads.InterstitialAd
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.FilePathHelper
 import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
-import com.volkanatalan.memory.views.AddMemoryViewView
+import com.volkanatalan.memory.views.AddMemoryView
 import kotlinx.android.synthetic.main.activity_add_memory.*
 
 
@@ -30,7 +30,7 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   private var PICK_IMAGE_MULTIPLE = 0
   private var ADD_DOCUMENTS = 0
   private lateinit var mInterstitialAd: InterstitialAd
-  private lateinit var mAddMemoryView: AddMemoryViewView
+  private lateinit var mAddMemoryView: AddMemoryView
 
 
 
@@ -43,7 +43,7 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   
     val editMemoryId = intent.getIntExtra("editMemory", -1)
     
-    mAddMemoryView = AddMemoryViewView(layoutInflater, this, editMemoryId)
+    mAddMemoryView = AddMemoryView(layoutInflater, this, editMemoryId)
     setContentView(mAddMemoryView.getRootView())
     
     setSupportActionBar(toolbar)
