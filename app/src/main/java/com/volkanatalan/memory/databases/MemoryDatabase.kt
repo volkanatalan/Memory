@@ -2,6 +2,7 @@ package com.volkanatalan.memory.databases
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
@@ -143,33 +144,61 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     
     val memories = mutableListOf<Memory>()
     val db = this.readableDatabase
-    val query = "SELECT * FROM $TABLE_MEMORIES " +
-      "WHERE ($tagsConditionText) " +
-      "OR ($titleConditionText);"
+    val queryTitle = "SELECT * FROM $TABLE_MEMORIES WHERE ($titleConditionText);"
+    val queryTag = "SELECT * FROM $TABLE_MEMORIES WHERE ($tagsConditionText);"
     
     //Log.d("database", query)
     
-    val c = db.rawQuery(query, null)
-    while (c.moveToNext()) {
-      val memory = Memory()
-      memory.id = c.getInt(c.getColumnIndex(COLUMN_ID))
-      memory.title = c.getString(c.getColumnIndex(COLUMN_TITLE))
-      memory.date = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault())
-        .parse(c.getString(c.getColumnIndex(COLUMN_DATE)))
-      memory.text = c.getString(c.getColumnIndex(COLUMN_TEXT))
-      memory.tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
-      memory.links = Memory()
-          .linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
-      memory.images = stringToList(c.getString(c.getColumnIndex(COLUMN_IMAGES)))
-      memory.documents = stringToList(c.getString(c.getColumnIndex(COLUMN_DOCUMENT)))
-
-      memories.add(memory)
-    }
-
-    c.close()
+    // First add memories, found with title
+    val cTitle = db.rawQuery(queryTitle, null)
+    addMemoriesToList(cTitle, memories)
+    
+    // Then add memories, found with tag
+    val cTag = db.rawQuery(queryTag, null)
+    addMemoriesToList(cTag, memories)
+    
     db.close()
 
    return memories
+  }
+  
+  
+  
+  
+  
+  private fun addMemoriesToList(c: Cursor, list: MutableList<Memory>){
+    while (c.moveToNext()) {
+      val memory = Memory()
+      memory.id = c.getInt(c.getColumnIndex(COLUMN_ID))
+      
+      if (!isListContainMemory(memory.id, list)) {
+        memory.title = c.getString(c.getColumnIndex(COLUMN_TITLE))
+        memory.date = SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault())
+          .parse(c.getString(c.getColumnIndex(COLUMN_DATE)))
+        memory.text = c.getString(c.getColumnIndex(COLUMN_TEXT))
+        memory.tags = stringToList(c.getString(c.getColumnIndex(COLUMN_TAGS)))
+        memory.links = Memory()
+          .linksFromString(c.getString(c.getColumnIndex(COLUMN_LINKS)))
+        memory.images = stringToList(c.getString(c.getColumnIndex(COLUMN_IMAGES)))
+        memory.documents = stringToList(c.getString(c.getColumnIndex(COLUMN_DOCUMENT)))
+  
+        list.add(memory)
+      }
+    }
+  
+    c.close()
+  }
+  
+  
+  
+  
+  
+  private fun isListContainMemory(memoryId: Int, list: MutableList<Memory>): Boolean{
+    for (memory in list){
+      if (memory.id == memoryId)
+        return true
+    }
+    return false
   }
 
 
