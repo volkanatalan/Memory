@@ -88,13 +88,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="File icons made by Dimitry Miroliubov from www.flaticon.com"
+        android:text="Low-poly neuronal brain icon"
         android:textSize="@dimen/h2"
         android:textColor="@color/black"
         android:drawableStart="@drawable/chevron_right"/>
   
       <TextView
         android:id="@+id/link4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="25dp"
+        android:text="iconspng.com/image/91900/low-poly-neuronal-brain"
+        android:textSize="@dimen/h3"
+        android:textColor="@color/link"
+        android:background="@drawable/bg_link"/>
+  
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="File icons made by Dimitry Miroliubov from www.flaticon.com"
+        android:textSize="@dimen/h2"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/chevron_right"/>
+  
+      <TextView
+        android:id="@+id/link5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
@@ -115,7 +136,7 @@
         android:drawableStart="@drawable/chevron_right"/>
   
       <TextView
-        android:id="@+id/link5"
+        android:id="@+id/link6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"

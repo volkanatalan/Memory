@@ -30,7 +30,8 @@ class AboutActivity : AppCompatActivity(), View.OnClickListener {
     if (v == link2 ||
       v == link3 ||
       v == link4 ||
-      v == link5){
+      v == link5 ||
+      v == link6){
       
       val linkTextView = v as TextView
       var link = linkTextView.text as String
