@@ -18,12 +18,16 @@ import com.volkanatalan.memory.fragments.IntroFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.interfaces.SearchViewInterface
 import com.volkanatalan.memory.models.Memory
-import com.volkanatalan.memory.services.Notification
+import com.volkanatalan.memory.services.RandomMemoryNotification
 import com.volkanatalan.memory.views.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import java.util.*
 
+/**
+ * User can search for memories on this activity. And also buttons to add a new memory,
+ * to edit, to delete and to see the existing memories are located in this activity.
+ */
 class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
 
 
@@ -40,24 +44,23 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     
+    // Inflate views
     mSearchView = SearchView(layoutInflater, this)
     setContentView(mSearchView.getRootView())
   
+    // Request codes
     EDIT_MEMORY = resources.getInteger(R.integer.edit_memory)
     CHOOSE_SEARCH_ITEM = resources.getInteger(R.integer.choose_search_item)
-  
-    setRandomMemoryNotifications(this, true)
     
+    // Setup some sections of the activity
     showIntro()
     setSupportActionBar(toolbar)
+    searchClickedNotification()
     setupAds()
     setupAnalytics()
   
-    val notificationMemoryTitle = intent.getStringExtra("memoryTitle")
-    if (notificationMemoryTitle != null) {
-      mSearchView.setSearchText(notificationMemoryTitle)
-      mSearchView.hideKeyboard(true)
-    }
+    // If it is allowed, show a notification of a random memory once an hour.
+    setRandomMemoryNotifications(this, true)
   }
   
   
@@ -202,19 +205,33 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
   
   
+  /**
+   * If user clicks on a random memory notification, search it.
+   */
+  private fun searchClickedNotification() {
+    val notificationMemoryTitle = intent.getStringExtra("memoryTitle")
+    if (notificationMemoryTitle != null) {
+      mSearchView.setSearchText(notificationMemoryTitle)
+      mSearchView.hideKeyboard(true)
+    }
+  }
+  
+  
+  
+  
   
   companion object {
+    /**
+     * Show random memory notification once an hour, if user allows.
+     */
     fun setRandomMemoryNotifications(context: Context, set: Boolean) {
-      val TAG = "RandmMemoryNotification"
+      val TAG = "RandmMemoryNotification" // Max 32 characters
       val randomMemoryReqCode = context.resources.getInteger(R.integer.random_memory_notification)
-      val intent = Intent(context, Notification::class.java)
+      val intent = Intent(context, RandomMemoryNotification::class.java)
       val pendingIntent =
         PendingIntent.getBroadcast(context, randomMemoryReqCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
       val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
       val recurring = (60 * 60000).toLong()  // in milliseconds
-  
-  
-      
   
       if (set) {
         val notifications = context.resources.getString(R.string.notifications)
@@ -244,7 +261,10 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
   
   
-  
+  /**
+   * Initialize mobile ads. Load a banner and an interstitial ad
+   * not to wait them load when they are supposed to be shown.
+   */
   private fun setupAds(){
     
     MobileAds.initialize(this, resources.getString(R.string.ad_app_id))
@@ -274,7 +294,9 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
   
   
-  
+  /**
+   * Setup Firebase Analytics.
+   */
   private fun setupAnalytics(){
     mFireBaseAnalytics = FirebaseAnalytics.getInstance(this)
     val bundle = Bundle()

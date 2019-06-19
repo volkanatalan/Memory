@@ -8,6 +8,9 @@ import android.content.Context
 import com.volkanatalan.memory.R
 
 
+/**
+ * Activity to let user to apply his/her preferences to this application.
+ */
 class SettingsActivity : AppCompatActivity() {
   
   
@@ -18,8 +21,13 @@ class SettingsActivity : AppCompatActivity() {
     setupAllowNotifications()
   }
   
+  
+  /**
+   * Let user to open or close random memory notifications.
+   */
   @SuppressLint("ApplySharedPref")
   private fun setupAllowNotifications() {
+    // Setup shared preferences
     val notifications = resources.getString(R.string.notifications)
     val allowNotifications = resources.getString(R.string.allow_random_notifications)
     val sharedPreferences = getSharedPreferences(notifications, Context.MODE_PRIVATE)
@@ -33,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
       editor.putBoolean(allowNotifications, isChecked)
       editor.commit()
   
-      // Disallow notifications
+      // Allow/disallow notifications
       MainActivity.setRandomMemoryNotifications(this, isChecked)
     }
   }

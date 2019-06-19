@@ -13,6 +13,9 @@ import android.widget.Toast
 import com.volkanatalan.memory.R
 import kotlinx.android.synthetic.main.activity_about.*
 
+/**
+ * Activity to give information about the developer of this application and to show credits.
+ */
 class AboutActivity : AppCompatActivity(), View.OnClickListener {
   
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +42,7 @@ class AboutActivity : AppCompatActivity(), View.OnClickListener {
       if (!link.startsWith("http://") && !link.startsWith("https://"))
         link = "http://$link"
       
+      // Open on clicked link with a browser
       startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
     

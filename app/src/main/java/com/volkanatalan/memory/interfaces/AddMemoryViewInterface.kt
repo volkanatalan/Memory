@@ -6,7 +6,7 @@ interface AddMemoryViewInterface {
   
   
   /**
-   * Returns the root view, i.e, the inflated layout file
+   * Returns the root view, i.e, the inflated layout file.
    */
   fun getRootView(): View
   

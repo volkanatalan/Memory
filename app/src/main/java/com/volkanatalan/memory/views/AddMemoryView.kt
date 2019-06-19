@@ -86,7 +86,9 @@ class AddMemoryView(inflater :LayoutInflater,
   
   
   
-  
+  /**
+   * Save memory to database.
+   */
   fun saveMemory() {
     
     // Get title and text

@@ -10,9 +10,12 @@ import android.os.Environment.getExternalStorageDirectory
 import android.os.Build
 
 
+/**
+ * FilePathHelper helps to get the path of a file, chosen with a chooser.
+ */
 class FilePathHelper{
   /**
-   * Method for return file path of Gallery image/ Document / Video / Audio
+   * Method to return file path of gallery image / document / video / audio
    *
    * @param context
    * @param uri

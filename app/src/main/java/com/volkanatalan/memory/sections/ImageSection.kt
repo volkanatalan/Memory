@@ -5,12 +5,16 @@ import android.view.View
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.volkanatalan.memory.R
+import com.volkanatalan.memory.activities.AddMemoryActivity
 import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import java.io.File
 
+/**
+ * Sets up image section of [AddMemoryActivity].
+ */
 class ImageSection(root: View,
                    listener: AddMemoryViewInterface.Listener?,
                    memory: Memory,
@@ -30,7 +34,9 @@ class ImageSection(root: View,
   
   
   
-  
+  /**
+   * Start setting up the image section of [AddMemoryActivity].
+   */
   fun setup(){
     if (mIsEditing && mEditMemory != null){
       addImagesToContainer()
@@ -45,7 +51,9 @@ class ImageSection(root: View,
   
   
   
-  
+  /**
+   * Adds to container an image, its name and a button to remove them from container.
+   */
   fun addImagesToContainer() {
     
     // Empty image container for any case

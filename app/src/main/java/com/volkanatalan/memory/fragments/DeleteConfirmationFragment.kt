@@ -54,6 +54,9 @@ class DeleteConfirmationFragment : Fragment() {
   
   lateinit var onDeleteClickListener: OnDeleteClickListener
   
+  /**
+   * OnDeleteClickListener is invoked when delete button in [DeleteConfirmationFragment] is clicked.
+   */
   interface OnDeleteClickListener{
     fun onClick(memory: Memory)
   }

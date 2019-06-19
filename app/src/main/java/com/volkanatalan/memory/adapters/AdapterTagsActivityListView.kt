@@ -8,6 +8,10 @@ import android.widget.BaseAdapter
 import com.volkanatalan.memory.R
 import kotlinx.android.synthetic.main.list_item_tags_activity.view.*
 
+/**
+ * An adapter for ListView in [SearchablesActivity].
+ * It contains only a TextView to show titles of saved memories.
+ */
 class AdapterTagsActivityListView(
   private val context: Context,
   private val searchItems:MutableList<String>

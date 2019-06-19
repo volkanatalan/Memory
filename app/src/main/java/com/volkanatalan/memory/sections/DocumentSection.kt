@@ -7,10 +7,15 @@ import com.volkanatalan.memory.R
 import com.volkanatalan.memory.helpers.FileIconHelper
 import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
+import com.volkanatalan.memory.activities.AddMemoryActivity
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import java.io.File
 
+
+/**
+ * Sets up document section of [AddMemoryActivity].
+ */
 class DocumentSection(root: View,
                       listener: AddMemoryViewInterface.Listener?,
                       memory: Memory,
@@ -30,8 +35,9 @@ class DocumentSection(root: View,
   
   
   
-  
-  
+  /**
+   * Start setting up the document section of [AddMemoryActivity].
+   */
   fun setup() {
     if (mIsEditing) {
       for (document in mEditMemory!!.documents) {
@@ -47,7 +53,10 @@ class DocumentSection(root: View,
   
   
   
-  
+  /**
+   * Add documents, given with a parameter to document container.
+   * @param paths A list of paths of documents to add to container
+   */
   fun setupDocumentsContainer(paths: MutableList<String>){
     if (mIsEditing){
       for (document in mEditMemory!!.documents){
@@ -72,7 +81,10 @@ class DocumentSection(root: View,
   
   
   
-  
+  /**
+   * Creates a document view choosing its image and
+   * creating its title, and adds it to document container.
+   */
   private fun addDocumentToContainer(documentPath: String){
     val view = LayoutInflater.from(mContext).inflate(R.layout.list_item_image_container, null)
     
@@ -85,7 +97,7 @@ class DocumentSection(root: View,
     pathTextView.text = file.name
     
     // Setup document icon image view
-    val icon = FileIconHelper().getResource(file)
+    val icon = FileIconHelper.getResource(file)
     imageView.setImageResource(icon)
     
     
@@ -97,6 +109,10 @@ class DocumentSection(root: View,
       val viewPosition = (parent.parent as LinearLayout).indexOfChild(parent)
       val docToRemove = mMemory.documents[viewPosition]
       
+      // If it is in editing mode and mEditMemory contains the
+      // document to be deleted, add the document to mDocumentsToRemove
+      // list to delete the file from storage when clicked on Done button.
+      // Then remove the document from mEditMemory.
       if (mIsEditing && mEditMemory!!.documents.contains(docToRemove)){
         mDocumentsToRemove.add(docToRemove)
         mEditMemory.documents.remove(docToRemove)

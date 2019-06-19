@@ -12,17 +12,16 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.FileProvider
-import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.volkanatalan.memory.BuildConfig
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.AddMemoryActivity
 import com.volkanatalan.memory.activities.MainActivity
-import com.volkanatalan.memory.models.Link
-import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.fragments.DeleteConfirmationFragment
 import com.volkanatalan.memory.interfaces.SearchViewInterface
+import com.volkanatalan.memory.models.Link
+import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_document.view.*
 import kotlinx.android.synthetic.main.list_item_link.view.*
@@ -36,7 +35,12 @@ import java.util.*
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-
+/**
+ * ReminiscenceHelper helps to show memory views to user.
+ * @param context
+ * @param container A view into which memory views to add
+ * @param listener A listener to handle user interactions
+ */
 class ReminiscenceHelper( context: Context,
                           container: LinearLayout,
                           listener:SearchViewInterface.Listener ) {
@@ -47,6 +51,9 @@ class ReminiscenceHelper( context: Context,
   private val mListener:SearchViewInterface.Listener = listener
   
   
+  /**
+   * Add memory views to container.
+   */
   fun remember(memories: MutableList<Memory>): ReminiscenceHelper {
 
     // Clear the container
@@ -83,6 +90,7 @@ class ReminiscenceHelper( context: Context,
       }
 
 
+      // Setup view sections
       setupDateSection(memory.date, dateTextView)
       setupImageContainer(memory.images, imageContainer)
       setupLinkContainer(memory.links, linkBase)
@@ -96,10 +104,13 @@ class ReminiscenceHelper( context: Context,
 
     return this
   }
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Clear all views from container.
+   */
   fun forget(){
     mContainer.removeAllViews()
   }
@@ -268,7 +279,7 @@ class ReminiscenceHelper( context: Context,
         documentNameTextView.text = fileName
 
         // Setup document icon image view
-        val fileIconResource = FileIconHelper().getResource(file)
+        val fileIconResource = FileIconHelper.getResource(file)
         documentIconImageView.setImageResource(fileIconResource)
         
         // Set on click listener to open file with another application
@@ -407,7 +418,7 @@ class ReminiscenceHelper( context: Context,
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     val uri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID, file)
   
-    val dataType = DocumentExtensionHelper().getFileType(file.extension)
+    val dataType = DocumentExtensionHelper.getFileType(file.extension)
   
     intent.setDataAndType(uri, dataType)
   
@@ -431,7 +442,10 @@ class ReminiscenceHelper( context: Context,
   
   
   lateinit var onTagClickListener: OnTagClickListener
-
+  
+  /**
+   * A listener to handle user's click events on tags.
+   */
   interface OnTagClickListener{
     fun onClick(tag: String)
   }

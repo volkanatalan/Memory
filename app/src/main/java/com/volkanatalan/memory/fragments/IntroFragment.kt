@@ -17,7 +17,9 @@ import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.MainActivity
 import kotlinx.android.synthetic.main.fragment_intro.view.*
 
-
+/**
+ * An animation is played in this [Fragment] when Memory app is opened.
+ */
 class IntroFragment : Fragment() {
   
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

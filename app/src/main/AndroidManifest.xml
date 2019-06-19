@@ -48,7 +48,7 @@
     </activity>
     <activity android:name=".activities.AddMemoryActivity"/>
     
-    <receiver android:name=".services.Notification"/>
+    <receiver android:name=".services.RandomMemoryNotification"/>
   </application>
 
 </manifest>

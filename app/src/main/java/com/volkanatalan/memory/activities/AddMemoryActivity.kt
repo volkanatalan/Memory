@@ -23,6 +23,9 @@ import com.volkanatalan.memory.views.AddMemoryView
 import kotlinx.android.synthetic.main.activity_add_memory.*
 
 
+/**
+ * Add new memories with this activity.
+ */
 class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
 
 
@@ -38,11 +41,14 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
   
+    // Request codes
     PICK_IMAGE_MULTIPLE = resources.getInteger(R.integer.pick_image_multiple)
     ADD_DOCUMENTS = resources.getInteger(R.integer.add_documents)
   
+    // If activity opened to edit a memory, get memory id
     val editMemoryId = intent.getIntExtra("editMemory", -1)
     
+    // Inflate views
     mAddMemoryView = AddMemoryView(layoutInflater, this, editMemoryId)
     setContentView(mAddMemoryView.getRootView())
     
@@ -103,11 +109,13 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
     if (resultCode == Activity.RESULT_OK && intent != null) {
 
       if (requestCode == ADD_DOCUMENTS) {
+        // Show selected documents
         val documents = takePathsFromChooser(intent)
         mAddMemoryView.documentSection.setupDocumentsContainer(documents)
       }
 
       else if (requestCode == PICK_IMAGE_MULTIPLE) {
+        // Show selected images
         mAddMemoryView.memory.images.addAll(takePathsFromChooser(intent))
         mAddMemoryView.imageSection.addImagesToContainer()
       }
@@ -115,9 +123,9 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   }
   
   
-  
-  
-  
+  /**
+   * Take paths of chosen files with chooser from intent.
+   */
   private fun takePathsFromChooser(intent: Intent): MutableList<String>{
     val list = mutableListOf<String>()
     if (intent.clipData != null) {
@@ -160,10 +168,6 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
         // No explanation needed, we can request the permission.
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
           PICK_IMAGE_MULTIPLE)
-      
-        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-        // app-defined int constant. The callback method gets the
-        // result of the request.
       }
     }
     
@@ -175,7 +179,7 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
         type = "image/*"
       }
       
-      startActivityForResult(createChooser(intent, "Select an app to add images"), PICK_IMAGE_MULTIPLE)
+      startActivityForResult(createChooser(intent, getString(R.string.select_an_app)), PICK_IMAGE_MULTIPLE)
     }
   }
   
@@ -200,10 +204,6 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
         // No explanation needed, we can request the permission.
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
           ADD_DOCUMENTS)
-      
-        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-        // app-defined int constant. The callback method gets the
-        // result of the request.
       }
     }
   
@@ -214,7 +214,7 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
         type = "*/*"
       }
   
-      startActivityForResult(createChooser(intent, "Select an app to add documents"), ADD_DOCUMENTS)
+      startActivityForResult(createChooser(intent, getString(R.string.select_an_app)), ADD_DOCUMENTS)
     }
   }
   
@@ -223,6 +223,8 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   
   
   override fun afterSaveMemory(isEditing: Boolean, memoryId: Int) {
+    // If not created a new memory, but edited an existing memory,
+    // send memory id to MainActivity and go back to MainActivity.
     if (isEditing){
       val updateIntent = Intent()
       updateIntent.putExtra("updateMemory", memoryId)
@@ -232,9 +234,9 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   }
   
   
-  
-  
-  
+  /**
+   * Setup interstitial ad and load a new one not to wait it load when it is supposed to be shown.
+   */
   private fun setupAds(){
     mInterstitialAd = InterstitialAd(this)
     mInterstitialAd.adUnitId = resources.getString(R.string.interstitial_ad)

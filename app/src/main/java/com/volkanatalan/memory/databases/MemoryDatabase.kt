@@ -10,7 +10,11 @@ import com.volkanatalan.memory.models.Memory
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MemoryDatabase(context: Context, factory: CursorFactory?) :
+/**
+ * MemoryDatabase is a database which is used to save
+ * memories to device storage. It has one table with 8 columns.
+ */
+class MemoryDatabase(context: Context, factory: CursorFactory?):
   SQLiteOpenHelper(context,
       DATABASE_NAME, factory,
       DATABASE_VERSION
@@ -57,11 +61,14 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     db.execSQL("DROP TABLE IF EXISTS $TABLE_MEMORIES")
     onCreate(db)
   }
-
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Check if there is a memory with the same id.
+   * @param id Id of the memory which is wanted to be checked
+   */
   fun hasMemory(id: Int): Boolean{
     val db = this.readableDatabase
     val c = db.rawQuery("SELECT $COLUMN_ID FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
@@ -72,10 +79,13 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
     return has
   }
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Save a memory to storage of the device.
+   */
   fun memorize(memory: Memory) {
     val db = this.writableDatabase
 
@@ -98,21 +108,26 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
 
     db.close()
   }
-
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Remove a memory from device storage.
+   */
   fun forget(memory: Memory){
     val db = this.writableDatabase
     db.delete(TABLE_MEMORIES, "$COLUMN_ID = ${memory.id}", null)
     db.close()
   }
-
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Find memories according to search text. Titles and texts of memories are searched.
+   * @param searchText A text that database makes search accordingly.
+   */
   fun rememberMemories(searchText: String): MutableList<Memory> {
     var subText = searchText
     val subTextList = mutableListOf<String>()
@@ -165,7 +180,9 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   
   
   
-  
+  /**
+   * Add memories from [Cursor] to [MutableList].
+   */
   private fun addMemoriesToList(c: Cursor, list: MutableList<Memory>){
     while (c.moveToNext()) {
       val memory = Memory()
@@ -192,7 +209,11 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   
   
   
-  
+  /**
+   * Check if there is a memory with the same id in given [MutableList].
+   * @param memoryId Id of the memory to check its existance
+   * @param list The list to check if it contains the given memory
+   */
   private fun isListContainMemory(memoryId: Int, list: MutableList<Memory>): Boolean{
     for (memory in list){
       if (memory.id == memoryId)
@@ -200,11 +221,14 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     }
     return false
   }
-
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Find the memory with given id.
+   * @param id Id of the memory which is wanted to be found
+   */
   fun remember(id: Int): Memory{
     val db = this.readableDatabase
     val c = db.rawQuery("SELECT * FROM $TABLE_MEMORIES WHERE $COLUMN_ID = \"$id\";", null)
@@ -229,7 +253,9 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   
   
   
-  
+  /**
+   * Pick a random memory from database.
+   */
   fun rememberRandomMemory(): Memory?{
     var memory: Memory? = null
     val db = this.readableDatabase
@@ -254,11 +280,14 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     
     return memory
   }
-
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Update a memory.
+   * @param memory Memory to update
+   */
   fun update(memory: Memory){
     val db = this.writableDatabase
     val values = ContentValues()
@@ -271,10 +300,14 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
     values.put(COLUMN_DOCUMENT, memory.documents.toString())
     db.update(TABLE_MEMORIES, values, "$COLUMN_ID = ?", arrayOf("${memory.id}"))
   }
-
-
-
-
+  
+  
+  
+  
+  /**
+   * Convert string with "[..., ...]" format to [MutableList].
+   * @param text A text with "[..., ...]" format
+   */
   private fun stringToList(text:String):MutableList<String> {
     val list = mutableListOf<String>()
     var mutableText = text
@@ -297,9 +330,10 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   }
   
   
-  
-  
-  
+  /**
+   * Get sorted searchables (titles and tags) from database with a [MutableList] of [Pair]
+   * @return The first parameter of [Pair] is type (Title or Tag), and the second one is name.
+   */
   fun getSearchables():MutableList<Pair<String, String>>{
     val searchables = mutableListOf<Pair<String, String>>()
     val db = this.readableDatabase
@@ -328,7 +362,9 @@ class MemoryDatabase(context: Context, factory: CursorFactory?) :
   
   
   
-  
+  /**
+   * Get titles of saved memories from database.
+   */
   fun getTitles(): MutableList<String>{
     val titles = mutableListOf<String>()
     val db = this.readableDatabase

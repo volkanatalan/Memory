@@ -12,13 +12,18 @@ import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import androidx.core.animation.doOnEnd
 import com.volkanatalan.memory.R
+import com.volkanatalan.memory.activities.MainActivity
 import com.volkanatalan.memory.databases.MemoryDatabase
+import com.volkanatalan.memory.fragments.DeleteConfirmationFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.interfaces.SearchViewInterface
 import com.volkanatalan.memory.models.Memory
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlin.math.abs
 
+/**
+ * SearchView is the view part of [MainActivity].
+ */
 class SearchView( inflater : LayoutInflater,
                   listener: SearchViewInterface.Listener): SearchViewInterface {
   
@@ -31,7 +36,6 @@ class SearchView( inflater : LayoutInflater,
   private lateinit var mReminiscenceHelper: ReminiscenceHelper
   private var mIsEditTextHidden = false
   private var mIsRememberedRandom = false
-  
   
   
   
@@ -135,7 +139,10 @@ class SearchView( inflater : LayoutInflater,
   
   
   
-  
+  /**
+   * Add found memories to search results container.
+   * @param text Text to find memories accordingly.
+   */
   private fun remember(text: String) = Thread( Runnable {
     mMemories = mMemoryDatabase.rememberMemories(text)
     mListener.onRemember(mReminiscenceHelper, mMemories)
@@ -204,9 +211,9 @@ class SearchView( inflater : LayoutInflater,
   }
   
   
-  
-  
-  
+  /**
+   * Add a random memory to search results container.
+   */
   private fun rememberRandom(){
     val randomMemory = mMemoryDatabase.rememberRandomMemory()
     if (randomMemory != null) {
@@ -234,9 +241,9 @@ class SearchView( inflater : LayoutInflater,
   }
   
   
-  
-  
-  
+  /**
+   * Show/hide interlayer that highlights [DeleteConfirmationFragment].
+   */
   override fun showInterlayer(show: Boolean) {
     val visibility: Int = if (show) View.VISIBLE
     else View.GONE
@@ -245,9 +252,10 @@ class SearchView( inflater : LayoutInflater,
   }
   
   
-  
-  
-  
+  /**
+   * Hide search bar when scrolling down, and show it when scrolling up.
+   * @param hide true: hide, false: show
+   */
   private fun hideEditText(hide: Boolean){
     
     val searchEditTextHeight = mContext.resources.getDimension(R.dimen.search_edit_text_height)

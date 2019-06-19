@@ -12,9 +12,9 @@ import com.volkanatalan.memory.activities.MainActivity
 import com.volkanatalan.memory.databases.MemoryDatabase
 
 
-class Notification: BroadcastReceiver() {
+class RandomMemoryNotification: BroadcastReceiver() {
   
-  val TAG = "Notification"
+  val TAG = "RndomMemoryNotification"  //Max 23 character
   
   
   override fun onReceive(context: Context?, intent: Intent?) {
