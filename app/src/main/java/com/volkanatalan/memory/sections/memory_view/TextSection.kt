@@ -11,7 +11,7 @@ import java.util.*
 /**
  * Sets up the text section of [MemoryView].
  */
-class TextSection(val rootView: View, val memory: Memory) {
+class TextSection(rootView: View, val memory: Memory) {
   
   val titleTextView = rootView.titleTextView
   val textTextView = rootView.textTextView

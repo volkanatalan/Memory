@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.LinearLayout
+import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.AddMemoryActivity
 import com.volkanatalan.memory.activities.MainActivity
 import com.volkanatalan.memory.databases.MemoryDatabase
@@ -23,18 +25,15 @@ import java.io.File
  * Sets up the button section of [MemoryView].
  */
 class ButtonSection ( val memoryViewContainer: LinearLayout,
-                      val rootView: LinearLayout,
+                      rootView: LinearLayout,
                       val memories: MutableList<Memory>,
-                      var listener: SearchViewInterface.Listener ) {
+                      val listener: SearchViewInterface.Listener ) {
   
   
   
   private val mContext = rootView.context
   private val mDeleteButton = rootView.deleteButtonImageView
   private val mEditButton = rootView.editButtonImageView
-  
-  
-  
   
   
   

@@ -31,7 +31,7 @@ class MemoryView( val context: Context,
     params.setMargins(0, margin, 0, margin)
     rootView = LinearLayout(context)
     rootView.layoutParams = params
-    rootView = LayoutInflater.from(context).inflate(R.layout.view_memory, RelativeLayout(context)) as LinearLayout
+    rootView = LayoutInflater.from(context).inflate(R.layout.view_memory, rootView) as LinearLayout
   
   
     // Setup sections

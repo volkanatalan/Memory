@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import com.volkanatalan.memory.R
+import com.volkanatalan.memory.helpers.ShareHelper
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.views.DocumentView
 import com.volkanatalan.memory.views.MemoryView
@@ -16,12 +17,13 @@ import kotlin.math.roundToInt
 /**
  * Sets up the document section of [MemoryView].
  */
-class DocumentSection (val rootView: LinearLayout, val memory: Memory) {
+class DocumentSection (rootView: LinearLayout, val memory: Memory) {
   
   
   private val mContext = rootView.context
   private val mDocuments = memory.documents
-  
+  private val mDocumentBase = rootView.documentBase
+  private val mDocumentContainer = rootView.documentContainer
   
   
   
@@ -31,9 +33,8 @@ class DocumentSection (val rootView: LinearLayout, val memory: Memory) {
   fun setup(){
     if (mDocuments.size > 0) {
       
-      val documentContainer = rootView.documentContainer as GridLayout
-      documentContainer.removeAllViews()
-      rootView.visibility = View.VISIBLE
+      mDocumentContainer.removeAllViews()
+      mDocumentBase.visibility = View.VISIBLE
       
       
       // Calculate column and row numbers
@@ -50,12 +51,12 @@ class DocumentSection (val rootView: LinearLayout, val memory: Memory) {
       val columnCount = freeSpaceForContainer / totalDocumentWidth
       val rowCount = ceil(mDocuments.size.toFloat() / columnCount.toFloat()).roundToInt()
       
-      documentContainer.columnCount = columnCount
-      documentContainer.rowCount = rowCount
+      mDocumentContainer.columnCount = columnCount
+      mDocumentContainer.rowCount = rowCount
       
       // Center container horizontal
       val containerStartMargin = (freeSpaceForContainer % totalDocumentWidth) / 2
-      (documentContainer.layoutParams as LinearLayout.LayoutParams).marginStart = containerStartMargin
+      (mDocumentContainer.layoutParams as LinearLayout.LayoutParams).marginStart = containerStartMargin
       
       
       for ((index, document) in mDocuments.withIndex()){
@@ -74,10 +75,20 @@ class DocumentSection (val rootView: LinearLayout, val memory: Memory) {
         param.setMargins(documentMargin, documentMargin, documentMargin, documentMargin)
         
         // Create document view
-        val documentView = DocumentView(mContext, document, mDocuments, param)
+        val documentView = DocumentView(mContext, document).rootView
+        documentView.layoutParams = param
+        
+        // Set on click listener to document view to open it with another application
+        documentView.setOnClickListener {
+          val parentOfDocument = it.parent as GridLayout
+          val documentIndex = parentOfDocument.indexOfChild(it)
+          val path = mDocuments[documentIndex]
+    
+          ShareHelper(mContext).shareFile(path)
+        }
         
         
-        documentContainer.addView(documentView.rootView)
+        mDocumentContainer.addView(documentView.rootView)
       }
     }
   }

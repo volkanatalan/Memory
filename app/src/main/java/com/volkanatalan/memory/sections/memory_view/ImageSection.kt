@@ -9,18 +9,20 @@ import com.volkanatalan.memory.helpers.ShareHelper
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.views.MemoryView
 import kotlinx.android.synthetic.main.memory_image.view.*
+import kotlinx.android.synthetic.main.view_memory.view.*
 import java.io.File
 
 
 /**
  * Sets up the image section of [MemoryView].
  */
-class ImageSection (val rootView: LinearLayout, val memory: Memory) {
+class ImageSection (rootView: LinearLayout, memory: Memory) {
   
   
   
   private val mContext = rootView.context
   private val mImages = memory.images
+  private val mImageContainer = rootView.imageContainer
   
   
   
@@ -33,8 +35,8 @@ class ImageSection (val rootView: LinearLayout, val memory: Memory) {
   fun setup() {
     if (mImages.size > 0) {
   
-      rootView.removeAllViews()
-      rootView.visibility = View.VISIBLE
+      mImageContainer.removeAllViews()
+      mImageContainer.visibility = View.VISIBLE
       
       for (imagePath in mImages) {
         
@@ -67,7 +69,7 @@ class ImageSection (val rootView: LinearLayout, val memory: Memory) {
           
           
           // Add image to image container
-          rootView.addView(root)
+          mImageContainer.addView(root)
         }
       }
     }
