@@ -18,6 +18,7 @@ import com.volkanatalan.memory.fragments.DeleteConfirmationFragment
 import com.volkanatalan.memory.helpers.ReminiscenceHelper
 import com.volkanatalan.memory.interfaces.SearchViewInterface
 import com.volkanatalan.memory.models.Memory
+import com.volkanatalan.memory.sections.memory_view.TagSection
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlin.math.abs
 
@@ -155,7 +156,7 @@ class SearchView( inflater : LayoutInflater,
   
   private fun setupSearchResultsContainer() {
     mReminiscenceHelper = ReminiscenceHelper(mContext, mRootView.search_results_container, mListener)
-    mReminiscenceHelper.onTagClickListener = object : ReminiscenceHelper.OnTagClickListener {
+    mReminiscenceHelper.onTagClickListener = object : TagSection.OnTagClickListener {
       override fun onClick(tag: String) {
         val currentSearch = mRootView.search_edit_text.text.toString()
         if (currentSearch != tag) mRootView.search_edit_text.setText(tag)
@@ -211,6 +212,8 @@ class SearchView( inflater : LayoutInflater,
   }
   
   
+  
+  
   /**
    * Add a random memory to search results container.
    */
@@ -241,6 +244,8 @@ class SearchView( inflater : LayoutInflater,
   }
   
   
+  
+  
   /**
    * Show/hide interlayer that highlights [DeleteConfirmationFragment].
    */
@@ -250,6 +255,8 @@ class SearchView( inflater : LayoutInflater,
     
     mRootView.interlayer.visibility = visibility
   }
+  
+  
   
   
   /**

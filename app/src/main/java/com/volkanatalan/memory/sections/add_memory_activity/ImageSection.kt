@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.sections
+package com.volkanatalan.memory.sections.add_memory_activity
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.list_item_image_container.view.*
 import java.io.File
 
 /**
- * Sets up image section of [AddMemoryActivity].
+ * Sets up the image section of [AddMemoryActivity].
  */
 class ImageSection(root: View,
                    listener: AddMemoryViewInterface.Listener?,

@@ -10,7 +10,7 @@ import com.volkanatalan.memory.R
 import com.volkanatalan.memory.databases.MemoryDatabase
 import com.volkanatalan.memory.interfaces.AddMemoryViewInterface
 import com.volkanatalan.memory.models.Memory
-import com.volkanatalan.memory.sections.*
+import com.volkanatalan.memory.sections.add_memory_activity.*
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import java.io.File
 import java.io.FileInputStream
@@ -64,10 +64,24 @@ class AddMemoryView(inflater :LayoutInflater,
     textSection = TextSection(mRootView, isEditing, mEditMemory)
     textSection.setup()
   
-    imageSection = ImageSection(mRootView, mListener, memory, isEditing, mEditMemory, mImagesToRemove)
+    imageSection = ImageSection(
+      mRootView,
+      mListener,
+      memory,
+      isEditing,
+      mEditMemory,
+      mImagesToRemove
+    )
     imageSection.setup()
   
-    documentSection = DocumentSection(mRootView, mListener, memory, isEditing, mEditMemory, mDocumentsToRemove)
+    documentSection = DocumentSection(
+      mRootView,
+      mListener,
+      memory,
+      isEditing,
+      mEditMemory,
+      mDocumentsToRemove
+    )
     documentSection.setup()
   
     linkSection = LinkSection(mRootView, memory, isEditing)

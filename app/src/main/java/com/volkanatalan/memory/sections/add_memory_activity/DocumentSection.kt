@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.sections
+package com.volkanatalan.memory.sections.add_memory_activity
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +14,7 @@ import java.io.File
 
 
 /**
- * Sets up document section of [AddMemoryActivity].
+ * Sets up the document section of [AddMemoryActivity].
  */
 class DocumentSection(root: View,
                       listener: AddMemoryViewInterface.Listener?,

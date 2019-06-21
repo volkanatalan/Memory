@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.sections
+package com.volkanatalan.memory.sections.add_memory_activity
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_tag_container.view.*
 
 /**
- * Sets up tag section of [AddMemoryActivity].
+ * Sets up the tag section of [AddMemoryActivity].
  */
 class TagSection(root: View,
                  memory: Memory,

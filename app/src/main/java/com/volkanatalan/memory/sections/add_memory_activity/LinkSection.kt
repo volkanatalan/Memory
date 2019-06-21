@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.sections
+package com.volkanatalan.memory.sections.add_memory_activity
 
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_add_memory.view.*
 import kotlinx.android.synthetic.main.list_item_link_container.view.*
 
 /**
- * Sets up link section of [AddMemoryActivity].
+ * Sets up the link section of [AddMemoryActivity].
  */
 class LinkSection( root: View,
                    memory: Memory,

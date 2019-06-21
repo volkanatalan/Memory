@@ -1,4 +1,4 @@
-package com.volkanatalan.memory.sections
+package com.volkanatalan.memory.sections.add_memory_activity
 
 import android.view.View
 import androidx.core.widget.addTextChangedListener
@@ -8,7 +8,7 @@ import com.volkanatalan.memory.views.AddMemoryView
 import kotlinx.android.synthetic.main.activity_add_memory.view.*
 
 /**
- * Sets up text section of [AddMemoryActivity].
+ * Sets up the text section of [AddMemoryActivity].
  */
 class TextSection(root: View, isEditing: Boolean, editMemory: Memory?) {
   
