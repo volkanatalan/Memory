@@ -1,7 +1,6 @@
 package com.volkanatalan.memory.sections.memory_view
 
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.volkanatalan.memory.R
 import com.volkanatalan.memory.models.Memory
