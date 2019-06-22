@@ -2,16 +2,11 @@ package com.volkanatalan.memory.sections.memory_view
 
 import android.content.Intent
 import android.net.Uri
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import com.volkanatalan.memory.R
 import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.views.LinkView
 import com.volkanatalan.memory.views.MemoryView
-import kotlinx.android.synthetic.main.view_link.view.*
 import kotlinx.android.synthetic.main.view_memory.view.*
 
 

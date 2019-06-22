@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.LinearLayout
-import com.volkanatalan.memory.R
 import com.volkanatalan.memory.activities.AddMemoryActivity
 import com.volkanatalan.memory.activities.MainActivity
 import com.volkanatalan.memory.databases.MemoryDatabase
@@ -18,7 +16,6 @@ import com.volkanatalan.memory.views.MemoryView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_memory.view.*
 import java.io.File
-
 
 
 /**
@@ -78,7 +75,7 @@ class ButtonSection ( val memoryViewContainer: LinearLayout,
     mEditButton.setOnClickListener {
       mContext.hideKeyboard(mEditButton)
       
-      val memoryView = mDeleteButton.parent.parent.parent as LinearLayout
+      val memoryView = it.parent.parent.parent as LinearLayout
       val position = memoryViewContainer.indexOfChild(memoryView)
       val memory = memories[position]
       
