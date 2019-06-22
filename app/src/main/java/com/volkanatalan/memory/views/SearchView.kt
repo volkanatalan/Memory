@@ -65,8 +65,10 @@ class SearchView( inflater : LayoutInflater,
     // Get the index of the memory to update
     var index = -1
     for (i in 0 until mMemories.size){
-      if (mMemories[i].id == id) index = i
-      break
+      if (mMemories[i].id == id) {
+        index = i
+        break
+      }
     }
     
     // if there is a memory with the same id, update it

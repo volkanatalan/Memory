@@ -193,7 +193,7 @@ class AddMemoryView(inflater :LayoutInflater,
       mListener?.afterSaveMemory(isEditing, memory.id)
   
       // Clear memory
-      memory = Memory()
+      if(!isEditing) memory = Memory()
     }
   }
   
