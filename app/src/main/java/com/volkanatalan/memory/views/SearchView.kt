@@ -124,10 +124,6 @@ class SearchView( inflater : LayoutInflater,
           rememberRandom()
         }
         
-        
-        
-        mListener.afterSearch()
-        
       }
       
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

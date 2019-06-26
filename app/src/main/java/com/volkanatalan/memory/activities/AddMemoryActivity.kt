@@ -7,7 +7,6 @@ import android.content.Intent.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -53,8 +52,6 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
     setContentView(mAddMemoryView.getRootView())
     
     setSupportActionBar(toolbar)
-  
-    setupAds()
   }
   
   
@@ -85,18 +82,8 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
   
   
   private fun onSelectedDone(){
-    
-    // Show ad
-    if (mInterstitialAd.isLoaded) {
-      mInterstitialAd.show()
-    } else {
-      Log.d(TAG, "The interstitial wasn't loaded yet.")
-    }
-    
-    
     // Save memory to database
     mAddMemoryView.saveMemory()
-    
   }
 
 
@@ -230,25 +217,6 @@ class AddMemoryActivity : AppCompatActivity(), AddMemoryViewInterface.Listener {
       updateIntent.putExtra("updateMemory", memoryId)
       setResult(Activity.RESULT_OK, updateIntent)
       finish()
-    }
-  }
-  
-  
-  /**
-   * Setup interstitial ad and load a new one not to wait it load when it is supposed to be shown.
-   */
-  private fun setupAds(){
-    mInterstitialAd = InterstitialAd(this)
-    mInterstitialAd.adUnitId = resources.getString(R.string.interstitial_ad)
-    mInterstitialAd.loadAd(AdRequest.Builder().build())
-  
-    mInterstitialAd.adListener = object: AdListener() {
-    
-      override fun onAdClosed() {
-        // Code to be executed when the interstitial ad is closed.
-        mInterstitialAd.loadAd(AdRequest.Builder().build())
-      
-      }
     }
   }
 }

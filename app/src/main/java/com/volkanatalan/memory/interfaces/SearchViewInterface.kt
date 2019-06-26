@@ -51,7 +51,5 @@ interface SearchViewInterface {
     fun onClickEditButton(intent: Intent)
     
     fun onRemember(reminiscenceHelper: ReminiscenceHelper, memories: MutableList<Memory>)
-    
-    fun afterSearch()
   }
 }

@@ -21,8 +21,9 @@ import com.volkanatalan.memory.models.Memory
 import com.volkanatalan.memory.services.RandomMemoryNotification
 import com.volkanatalan.memory.views.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.toolbar
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * User can search for memories on this activity. And also buttons to add a new memory,
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
     setSupportActionBar(toolbar)
     searchClickedNotification()
     setupAds()
+    showScheduledAd()
     setupAnalytics()
   
     // If it is allowed, show a notification of a random memory once an hour.
@@ -99,16 +101,6 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
   override fun onRemember(reminiscenceHelper: ReminiscenceHelper, memories: MutableList<Memory>) {
     runOnUiThread { reminiscenceHelper.remember(memories) }
-  }
-  
-  
-  
-  
-  
-  override fun afterSearch() {
-    // Show ad
-    if (mInterstitialAd.isLoaded) mInterstitialAd.show()
-    else Log.d(TAG, "The interstitial wasn't loaded yet.")
   }
 
 
@@ -280,6 +272,7 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
   
     // Interstitial ad
     mInterstitialAd = InterstitialAd(this)
+    // Test id: ca-app-pub-3940256099942544/1033173712
     mInterstitialAd.adUnitId = resources.getString(R.string.interstitial_ad)
     mInterstitialAd.loadAd(AdRequest.Builder().build())
   
@@ -289,6 +282,28 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
         mInterstitialAd.loadAd(AdRequest.Builder().build())
       }
     }
+  }
+  
+  
+  
+  
+  
+  private fun showScheduledAd(){
+    val adScheduler = Executors.newSingleThreadScheduledExecutor()
+    adScheduler.scheduleAtFixedRate({
+      run {
+        runOnUiThread {
+          run {
+            if (mInterstitialAd.isLoaded) {
+              mInterstitialAd.show()
+            } else {
+              Log.d(TAG," Interstitial not loaded")
+            }
+          }
+        }
+      }
+    }, 10 * 60, 10 * 60, TimeUnit.SECONDS)
+    
   }
   
   
