@@ -9,13 +9,11 @@ android {
         applicationId 'com.volkanatalan.memory'
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-        versionCode 2
-        versionName "1.0.1"
     }
     buildTypes {
         release {
