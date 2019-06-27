@@ -36,4 +36,6 @@
   <string name="settings">Settings</string>
   <string name="allow_notifications">Allow notifications</string>
   <string name="select_an_app">Select an app to add documents</string>
+  <string name="privacy_policy">Privacy Policy</string>
+  <string name="privacy_policy_link">https://volkanatalan.blogspot.com/2019/06/memory-app-privacy-policy.html</string>
 </resources>

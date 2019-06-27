@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -145,15 +146,22 @@ class MainActivity : AppCompatActivity(), SearchViewInterface.Listener {
       startActivity(intent)
       true
     }
-    
-    R.id.action_mainactivity_about -> {
-      val intent = Intent(this, AboutActivity::class.java)
+  
+    R.id.action_mainactivity_settings -> {
+      val intent = Intent(this, SettingsActivity::class.java)
       startActivity(intent)
       true
     }
+  
+    R.id.action_mainactivity_privacy_policy -> {
+      // Open privacy policy link with a browser
+      val link = resources.getString(R.string.privacy_policy_link)
+      startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+      true
+    }
     
-    R.id.action_mainactivity_settings -> {
-      val intent = Intent(this, SettingsActivity::class.java)
+    R.id.action_mainactivity_about -> {
+      val intent = Intent(this, AboutActivity::class.java)
       startActivity(intent)
       true
     }
