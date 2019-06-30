@@ -19,4 +19,4 @@ Link: [https://play.google.com/store/apps/details?id=com.volkanatalan.memory](ht
 
 © Volkan ATALAN
 
-Licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](LICENSE.txt).
