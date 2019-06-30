@@ -17,6 +17,6 @@ Link: [https://play.google.com/store/apps/details?id=com.volkanatalan.memory](ht
 
 ## License & Copyright
 
-© Volkan ATALAN
+© 2019 Volkan ATALAN
 
 Licensed under the [MIT License](LICENSE.txt).
